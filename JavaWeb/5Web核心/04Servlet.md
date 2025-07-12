@@ -42,7 +42,7 @@
 * **继承httpSocket与继承Servlet的效果一样，并且继承HttpServlet的代码更加简洁**
 * **当使用get方法访问该Servlet，容器就会调用doGet方法()；当使用post方法去访问该Servlet，就会调用doPost方法**
 *  通过url直接访问资源是get方式的请求资源，而post请求方式需要用表单来请求该Servlet的资源
-* 表单的action属性指定表单数据提交的位置url ，编写的是项目的路径下的servlet的资源
+* 表单的action属性指定表单数据提交的位置url ，编写的是项目的路径下的该servlet的路径
 
 	![](assets/04Servlet/file-20250709172711817.png)
 
