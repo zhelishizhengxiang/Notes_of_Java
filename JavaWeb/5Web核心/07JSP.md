@@ -1,4 +1,4 @@
-现在的主流开发方式是servlet+html+ajax。servlet+jsp已经过时，下面的内容了解即可
+1现在的主流开发方式是servlet+html+ajax。servlet+jsp已经过时，下面的内容了解即可
 ### 一、JSP概述
 
 ![](assets/07JSP/file-20250712162116953.png)
@@ -105,7 +105,7 @@ JSTL的使用：
 ###### forEach标签
 
 ![](assets/07JSP/file-20250713185755611.png)
-* status是用于展示数据的序号值连续的，因为数据库可能会删除某些数据，由于主键自增导致序号不连续，未来展现出连续的数据就用status。其有两个属性：index从0开始，count从1开始
+* varStatus是用于展示数据的序号值连续的，因为数据库可能会删除某些数据，由于主键自增导致序号不连续，未来展现出连续的数据就用status。其有两个属性：index从0开始，count从1开始
 
 	![](assets/07JSP/file-20250713190011187.png)
 * fori循环和for-each循环时一样的。可以做分页控制条

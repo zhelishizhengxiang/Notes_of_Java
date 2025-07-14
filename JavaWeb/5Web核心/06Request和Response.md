@@ -28,7 +28,7 @@
 ![](assets/06Request和Response/file-20250709214351943.png)
 ![](assets/06Request和Response/file-20250709214502387.png)
 ![](assets/06Request和Response/file-20250709214921324.png)
-
+![](assets/06Request和Response/file-20250715005008368.png)
 为了演示通用方式获得请求参数，写下面前端代码（同种是例子，method再从下面代码的实际操作中会有改变，下面会说明）
 
 ![](assets/06Request和Response/file-20250709215159921.png)
