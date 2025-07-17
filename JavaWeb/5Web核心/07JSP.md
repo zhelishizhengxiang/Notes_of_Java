@@ -1,4 +1,4 @@
-1现在的主流开发方式是servlet+html+ajax。servlet+jsp已经过时，下面的内容了解即可
+现在的主流开发方式是servlet+html+ajax。servlet+jsp已经过时，下面的内容了解即可
 ### 一、JSP概述
 
 ![](assets/07JSP/file-20250712162116953.png)

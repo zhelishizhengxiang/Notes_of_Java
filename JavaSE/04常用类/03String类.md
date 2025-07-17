@@ -75,6 +75,7 @@ String类的继承关系如下：
 ![](assets/03String类/file-20250215195129003.png)
 ![](assets/03String类/file-20250711003942245.png)
 ![](assets/03String类/file-20250303172206825.png)
+![](assets/03String类/file-20250716155857790.png)
 * 其他的数据类型通过该方法也可以转为字符串类型
 
 ![](assets/03String类/file-20250215200003422.png)
