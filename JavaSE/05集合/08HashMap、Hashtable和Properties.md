@@ -257,7 +257,7 @@ HashMap与Hashtable的对比如下图所示：
 
 
 
-###  3）Properties
+##  3）Properties
 该类的继承关系如下图所示：
 
 ![](assets/08HashMap、Hashtable和Properties/file-20250225230517021.png)
@@ -271,4 +271,6 @@ Properties的基本介绍如下：
 
 ![](assets/08HashMap、Hashtable和Properties/file-20250226092815555.png)
 * 可以通过k-v存放数据，并且key和value与Hashtable一样不能都不能为空，不然回抛出空指针异常
-* 如果有相同的key的元素put景来，value’同样会被替换
+* 如果有相同的key的元素put进来，value’同样会被替换
+
+![](assets/08HashMap、Hashtable和Properties/file-20250724155551566.png)

@@ -206,6 +206,7 @@ import java.sql.SQLFeatureNotSupportedException;
 import java.util.logging.Logger;
 
 /**
+* 
  * @author 动力节点
  * @version 1.0
  * @className MyDataSource
@@ -824,7 +825,7 @@ public class People {
     <bean id="peopleBean" class="com.powernode.spring6.beans.People">
         <property name="phones">
             <set>
-                <!--非简单类型可以使用ref，简单类型使用value-->
+                <!--尽管这里注入了多个，但是set会自动去重，只会显示3个-->
                 <value>110</value>
                 <value>110</value>
                 <value>120</value>
@@ -840,9 +841,8 @@ public class People {
 ![image.png](https://cdn.nlark.com/yuque/0/2022/png/21376908/1665199868843-bc721edd-e89a-4298-b41a-7c5ac8c93530.png#averageHue=%23917f66&clientId=ufc7e21e2-2cbb-4&from=paste&height=119&id=uab47bd18&originHeight=119&originWidth=737&originalType=binary&ratio=1&rotation=0&showTitle=false&size=14030&status=done&style=shadow&taskId=ua0f55010-1dde-4237-a389-bdb339091f0&title=&width=737)
 **要点：**
 
-- **使用<set>标签**
-- **set集合中元素是简单类型的使用value标签，反之使用ref标签。**
-
+- **使用\<set>标签**
+*  **set集合中元素是简单类型的使用value标签，反之使用ref标签。**
 
 
 ![标头.jpg](https://cdn.nlark.com/yuque/0/2023/jpeg/21376908/1692002570088-3338946f-42b3-4174-8910-7e749c31e950.jpeg#averageHue=%23f9f8f8&clientId=uc5a67c34-8a0d-4&from=paste&height=78&id=woKpa&originHeight=78&originWidth=1400&originalType=binary&ratio=1&rotation=0&showTitle=false&size=23158&status=done&style=shadow&taskId=u98709943-fd0b-4e51-821c-a3fc0aef219&title=&width=1400)
@@ -905,7 +905,7 @@ public class People {
 ![image.png](https://cdn.nlark.com/yuque/0/2022/png/21376908/1665200352800-0b980533-2d1f-4222-8aaf-1b253cb19a39.png#averageHue=%23917c61&clientId=ufc7e21e2-2cbb-4&from=paste&height=121&id=u49b67347&originHeight=121&originWidth=1231&originalType=binary&ratio=1&rotation=0&showTitle=false&size=20036&status=done&style=shadow&taskId=u17844f89-fdf0-45fc-b532-425734c5d39&title=&width=1231)
 **要点：**
 
-- **使用<map>标签**
+- **使用\<map>标签**
 - **如果key是简单类型，使用 key 属性，反之使用 key-ref 属性。**
 - **如果value是简单类型，使用 value 属性，反之使用 value-ref 属性。**
 
@@ -972,7 +972,7 @@ public class People {
 ![image.png](https://cdn.nlark.com/yuque/0/2022/png/21376908/1665201002733-ae9273da-1fb9-495c-907e-e6c8489a7ec5.png#averageHue=%23968269&clientId=ufc7e21e2-2cbb-4&from=paste&height=121&id=u0920d032&originHeight=121&originWidth=1390&originalType=binary&ratio=1&rotation=0&showTitle=false&size=17881&status=done&style=shadow&taskId=u88c0bcbc-5a5a-46c3-ba4c-0eb0c365cbb&title=&width=1390)
 **要点：**
 
-- **使用<props>标签嵌套<prop>标签完成。**
+- **使用\<props>标签嵌套\<prop>标签完成。**
 
 
 

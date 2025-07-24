@@ -720,15 +720,15 @@ Windows：
 Linux：
 
 * ps -ef 查看所有进程
-* ps -fT -p <PID> 查看某个进程（PID）的所有线程
+* ps -fT -p \<PID> 查看某个进程（PID）的所有线程
 * kill 杀死进程
 * top 按大写 H 切换是否显示线程
-* top -H -p <PID> 查看某个进程（PID）的所有线程
+* top -H -p \<PID> 查看某个进程（PID）的所有线程
 
 Java：
 
 * jps 命令查看所有 Java 进程
-* jstack <PID> 查看某个 Java 进程（PID）的所有线程状态
+* jstack \<PID> 查看某个 Java 进程（PID）的所有线程状态
 * jconsole 来查看某个 Java 进程中线程的运行情况（图形界面）
 
 

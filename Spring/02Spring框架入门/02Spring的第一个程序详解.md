@@ -8,6 +8,15 @@
 	* **其中id属性为：是该Bean的唯一表示，不可以重复**  
 	* **class属性为： 是需要管理的类的全限定类名（带包名的类名）**
 
+注：配置文件中上面关于xmln的内容的作用  
+![](assets/02Spring的第一个程序详解/file-20250725003334555.png)
+![](assets/02Spring的第一个程序详解/file-20250725003458523.png)
+
+
+注：xml配置文件标签的写法  
+![](assets/02Spring的第一个程序详解/file-20250724112324255.png)
+![](assets/02Spring的第一个程序详解/file-20250724112342687.png)
+![](assets/02Spring的第一个程序详解/file-20250724112359797.png)
 
 2. 编写程序测试如下图所示，如图所示创建出来了对象。  
 ![](assets/02Spring的第一个程序详解/file-20250723130120312.png)
@@ -15,7 +24,7 @@
 * ApplicationContext是一个接口，其中有一个实现类ClassPathXmlApplicationContext  
 * ClassPathXmlApplicationContext 是专门从类路径当中加载Spring配置文件的一个应用上下文对象  
 * **第一句代码只要一执行，就相当于是启动Spring容器，并且解析xml配置文件，将其中的所有Bean对象全部实例化出来，放在Spring容器中**。而不是在getBean()时才创建。
-* **通过`applicationContext.getBean(id)`根据配置文件张设置的id来获取Bean对象**
+* **通过`applicationContext.getBean(id)`根据配置文件设置的id来获取Bean对象**
 
 ### 2.底层原理
 
@@ -57,4 +66,4 @@
 注：spring中的路径问题  
 ![](assets/02Spring的第一个程序详解/file-20250723133104912.png)
 ![](assets/02Spring的第一个程序详解/file-20250723133404213.png)
-* 一般情况下都写绝对路径，即从类路径目录开始的路径，resource是根目录。
+* 一般情况下都写相对路径，即从类路径目录开始的路径，resource是根目录。
