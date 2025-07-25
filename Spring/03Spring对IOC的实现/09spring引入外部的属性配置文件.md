@@ -110,8 +110,7 @@ public void testProperties(){
 总结：引入外部的properties文件的步骤：
 1. **引入context命名空间**。   
 	![](assets/09spring引入外部的属性配置文件/file-20250725003615881.png)
-2. **使用标签context:property-placeholder的location属性来指定属性配置文件的路径。  
-location默认从类的根路径下开始加载资源**。  
+2. **使用标签context:property-placeholder的location属性来指定属性配置文件的路径。location默认从类的根路径下开始加载资源**。    
 ![](assets/09spring引入外部的属性配置文件/file-20250725004332337.png)
 3. **怎么取值呢？第三步：${key}。其中\${}是属性占位符**
-4. **由于在spring当中使用${}去加载其中的key来得到value的时候，默认会先加载windows系统下的环境变量。所以直接写username会打印出administrator，因为这是windows系统下的环境变量的值。所以一般会对key加上他的用处作为，比如上图所示。**
+4. **由于在spring当中使用${}去加载其中的key来得到value的时候，默认会先加载windows系统下的环境变量。所以直接写username会打印出administrator，因为这是windows系统下的环境变量的值。所以一般会对key加上他的用处作为前缀，比如上图所示。**
