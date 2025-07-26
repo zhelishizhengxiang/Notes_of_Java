@@ -9,9 +9,8 @@
 * 只有我们知道了特殊的时间节点都在哪，到时我们才可以确定代码写到哪。
 * **我们可能需要在某个特殊的时间点上执行一段特定的代码，这段代码就可以放到这个节点上。当生命线走到这里的时候，自然会被调用。**
 
-
-## 二、Bean的生命周期之5步
 Bean生命周期的管理，可以参考Spring的源码：AbstractAutowireCapableBeanFactory类的doCreateBean()方法。
+## 二、Bean的生命周期之5步
 
 Bean生命周期可以粗略的划分为五大步：
 - **第一步：实例化Bean(调无参构造方法)**
@@ -19,6 +18,8 @@ Bean生命周期可以粗略的划分为五大步：
 - **第三步：初始化Bean（会调用Bean的init方法。注意：这个init方法需要自己写，自己配。方法名随意）**
 - **第四步：使用Bean**
 - **第五步：销毁Bean（会调用Bean的destroy方法。注意：这个destroy方法需要自己写，自己配。方法名随意）**
+
+注意：**需要手动指定初始化方法，和销毁方法。init-method属性指定初始化方法，destroy-method属性指定销毁方法，填入对应的方法名。**
 
 ![image.png](https://cdn.nlark.com/yuque/0/2022/png/21376908/1665388735200-444405f6-283d-4b3a-8cdf-8c3e01743618.png#averageHue=%23f6f6f6&clientId=ue2397093-2e4b-4&from=paste&height=142&id=u7c6b9a1a&originHeight=142&originWidth=851&originalType=binary&ratio=1&rotation=0&showTitle=false&size=11129&status=done&style=shadow&taskId=u288cbb6f-b738-43ff-ac53-6eb841c29fc&title=&width=851)
 
@@ -117,6 +118,8 @@ public class BeanLifecycleTest {
 * **这两个方法中，第一个参数：刚创建的bean对象；第二个参数：bean的名字，通常情况下Bean的id**。
 *  **一定要注意：在spring.xml文件中配置的Bean后处理器将作用于当前配置文件中所有的Bean,即当前配置文件中所有的Bean的生命周期都会有这两步**
 
+![image.png](https://cdn.nlark.com/yuque/0/2022/png/21376908/1665393936765-0ea5dcdd-859a-4ac5-9407-f06022c498b9.png#averageHue=%23f6f6f6&clientId=ue2397093-2e4b-4&from=paste&height=170&id=u040e6fe3&originHeight=170&originWidth=1015&originalType=binary&ratio=1&rotation=0&showTitle=false&size=15217&status=done&style=shadow&taskId=u35a0a713-9831-44bb-87af-8016c399b84&title=&width=1015)
+
 注：**当执行完`ApplicationContext applicationContext = new ClassPathXmlApplicationContext("spring.xml");`的时候，他就已经完成了使用Bean之前的所有生命周期。**
 
 编写一个类实现BeanPostProcessor类，并且重写before和after方法：
@@ -157,7 +160,7 @@ public class LogBeanPostProcessor implements BeanPostProcessor {
 执行测试程序：      
 ![image.png](https://cdn.nlark.com/yuque/0/2022/png/21376908/1665393219244-4763ce2a-1cec-4b67-b3b4-54c2d28bc46a.png#averageHue=%23302f2e&clientId=ue2397093-2e4b-4&from=paste&height=283&id=u5f23f762&originHeight=283&originWidth=544&originalType=binary&ratio=1&rotation=0&showTitle=false&size=33201&status=done&style=shadow&taskId=u7ee591f2-bf31-4f9c-8ab0-bbcafcf4933&title=&width=544)
 
-如果加上Bean后处理器的话，Bean的生命周期就是7步了：  
+如果加上Bean后处理器的话，Bean的生命周期就是7步了：    
 ![image.png](https://cdn.nlark.com/yuque/0/2022/png/21376908/1665393936765-0ea5dcdd-859a-4ac5-9407-f06022c498b9.png#averageHue=%23f6f6f6&clientId=ue2397093-2e4b-4&from=paste&height=170&id=u040e6fe3&originHeight=170&originWidth=1015&originalType=binary&ratio=1&rotation=0&showTitle=false&size=15217&status=done&style=shadow&taskId=u35a0a713-9831-44bb-87af-8016c399b84&title=&width=1015)
 
 
@@ -269,8 +272,8 @@ public class LogBeanPostProcessor implements BeanPostProcessor {
 ```
 执行结果：
 ![image.png](https://cdn.nlark.com/yuque/0/2022/png/21376908/1665395466500-d95b1a58-24e1-46f0-b72a-aa7764b0336a.png#averageHue=%232e2e2d&clientId=ue2397093-2e4b-4&from=paste&height=443&id=uc58b1500&originHeight=443&originWidth=1001&originalType=binary&ratio=1&rotation=0&showTitle=false&size=64711&status=done&style=shadow&taskId=u108c9520-781d-4773-a8e7-932627d0c76&title=&width=1001)
-**通过测试可以看出来：**
 
+**通过测试可以看出来：**  
 - **InitializingBean的方法早于init-method的执行。**
 - **DisposableBean的方法早于destroy-method的执行。**
 
@@ -365,4 +368,4 @@ public class RegisterBeanTest {
 执行结果：    
 ![image.png](https://cdn.nlark.com/yuque/0/2022/png/21376908/1666262245551-b00bbba7-4107-4d44-8441-fbcd6f799293.png#averageHue=%23f6f4f1&clientId=u041108cd-a231-4&from=paste&height=146&id=u5e4b0447&originHeight=146&originWidth=525&originalType=binary&ratio=1&rotation=0&showTitle=false&size=17970&status=done&style=shadow&taskId=u9977d128-17b7-4b7f-87e6-b43bcf4d012&title=&width=525)
 * **通过使用DefaultListableBeanFactory对象的registerSingleton("beanName", bean)将对象交给spring容器进行管理。**
-* 通过DefaultListableBeanFactory对象的getBean(beanName,Bean,class)来获取
+* **通过DefaultListableBeanFactory对象的getBean(beanName,Bean,class)来获取**
