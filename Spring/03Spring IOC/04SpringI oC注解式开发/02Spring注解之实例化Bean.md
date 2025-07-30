@@ -105,7 +105,7 @@ public @interface Repository {
 - 第三步：在配置文件中指定扫描的包
 - 第四步：在Bean类上使用注解
 
-**第一步：加入aop的依赖**  
+**第一步：加入aop的依赖**    
 我们可以看到当加入spring-context依赖之后，会关联加入aop的依赖。所以这一步不用做。  
 ![image.png](https://cdn.nlark.com/yuque/0/2022/png/21376908/1665545268001-e3fb24f3-6688-4f52-a8c7-7c3084fa10a2.png#averageHue=%23faf8f5&clientId=u999e1312-db7a-4&from=paste&height=206&id=u99ab43ce&originHeight=206&originWidth=434&originalType=binary&ratio=1&rotation=0&showTitle=false&size=14246&status=done&style=shadow&taskId=u9a6c4b51-5411-4887-aa32-aadd701f90c&title=&width=434)
 **第二步：在配置文件中添加context命名空间**

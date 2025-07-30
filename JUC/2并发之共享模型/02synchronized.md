@@ -21,12 +21,55 @@ synchronized(对象) // 线程1， 线程2(blocked)
 
 * 理解：**synchronized 实际是用对象锁保证了临界区内代码的原子性，即临界区内的代码对外是不可分割的，不会被线程切换所打断。**
 * **并且多个线程争夺统一资源时，这些线程对应的临界区必须都加锁。**
-* 实际使用中，常常使用的是`synchronized(this)`。
+
 
 
 ### 2.synchronized加在方法上
+synchronized加在方法上是有两种语法，分别是加在成员方法上和静态方法上
+
+加在普通方法上的语法如下
+```java
+class Test{
+	public synchronized void test() {
+	}
+}
+等价于
+class Test{
+	public void test() {
+		synchronized(this) {
+		
+		}
+	}
+}
+```
+* **synchronized关键字加在成员方法上，相当于锁住的是this对象()。** 即两个线程同时调用**同一个对象**的 `synchronized` 方法时，会排队执行；但调用**不同对象**的同名同步方法时，互不影响
+
+加在静态方法上的语法如下
+```java
+class Test{
+	public synchronized static void test() {
+	}
+}
+等价于
+class Test{
+	public void test() {
+		synchronized(Test.class) {
+		
+		}
+	}
+}
+```
+* **synchronized关键字加在静态方法上，相当于锁住的是类对象()。** 即两个线程分别通过**不同对象**调用静态 `synchronized` 方法时，会排队执行（因为共享类锁）。
+* **注意：锁住类对象不代表就锁住的this对象，两个对象是不同的对象。只有锁住的是相同的对象才会形成互斥**
 
 
+### 3.线程八锁练习题
+![](assets/02synchronized/file-20250730153549243.png)
+![](assets/02synchronized/file-20250730153607987.png)
+![](assets/02synchronized/file-20250730154332627.png)
+![](assets/02synchronized/file-20250730154456158.png)![](assets/02synchronized/file-20250730154730559.png)
 
-
-
+![](assets/02synchronized/file-20250730154908203.png)
+![](assets/02synchronized/file-20250730155001977.png)
+![](assets/02synchronized/file-20250730155051774.png)
+ * 注意情况5和情况7中锁住的是不同对象，所以没有没有形成互斥
