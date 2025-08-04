@@ -124,8 +124,8 @@ public class User {
 
 ```
 编写Spring配置文件：
-* JdbcTemplate是Spring提供好的类，这类的完整类名是org.springframework.jdbc.core.JdbcTemplate
-* 我们怎么使用这个类呢？new对象就可以了。怎么new对象，Spring最在行了。直接将这个类配置到Spring配置文件中，纳入Bean管理即可。
+* **JdbcTemplate是Spring提供好的类，这类的完整类名是org.springframework.jdbc.core.JdbcTemplate**
+* 我们怎么使用这个类呢？new对象就可以了。怎么new对象，Spring最在行了。**直接将这个类配置到Spring配置文件中，纳入Bean管理即可**。
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"

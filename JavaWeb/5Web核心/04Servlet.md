@@ -18,7 +18,7 @@
 ### 3.Servlet的生命周期
 ![](assets/04Servlet/file-20250709162431988.png)
 * loadOnStartUp的默认值就为-1，也就是默认一次被访问时才创建Servlet对象。
-* servlet可以被调用多次，而destroy()和init()会被调用多次
+* servlet可以被调用多次，而destroy()和init()会被调用一次
 
 ![](assets/04Servlet/file-20250709170935922.png)
 
@@ -66,7 +66,7 @@
 
 ### XML配置方式编写Servlet
 
-知道折磨个东西就行，已经过时。
+知道这么个东西就行，已经过时。
 
 ![](assets/04Servlet/file-20250709180725556.png)
 

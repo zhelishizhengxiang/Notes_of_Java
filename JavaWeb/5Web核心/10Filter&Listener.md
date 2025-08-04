@@ -6,7 +6,7 @@
 ### 1.快速入门
 ![](assets/10Filter&Listener/file-20250716132758738.png)
 * 当做完通用的操作后，需要“放行”。**拦截器在拦截请求做完增强型处理后需要放走该请求，让其去请求资源。**
-* Servlet接口是javax.servlet下的接口，其中放行的chain是doFilter()的接口
+* FIlter接口是javax.servlet下的接口，其中放行的chain是doFilter()的参数
 * **当拦截路径被响应时，就会执行对应的`doFilter()`方法**
 
 ![](assets/10Filter&Listener/file-20250716145856561.png)

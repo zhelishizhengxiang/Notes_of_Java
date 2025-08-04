@@ -125,7 +125,8 @@ public class MyAspect {
 }
 ```
 * **@Aspect注解用于说明该类是一个切面类**
-* **注解@Before标注的方法表示该方法为前置通知。其中填入的值为切点表达式，来表示切点。即通知往哪些方法上切入**
+* **注解@Before标注的方法表示该方法为前置通知。其中填入的值为切点表达式，来表示切点。即通知往哪些切点上切入**
+* **注意通知是就是增强的代码。它在切面类中是一个方法，其中的方法体就是增强的代码，方法名随意写**
 
 7. **在spring配置文件中启用自动代理**
 ```xml
@@ -143,7 +144,7 @@ public class MyAspect {
     <aop:aspectj-autoproxy proxy-target-class="true"/>
 </beans>
 ```
-* **<aop:aspectj-autoproxy  proxy-target-class="true"/> 表示开启自动代理。spring容器在扫描类的时候，凡事带有@Aspect注解的bean都会生成代理对象**。
+* **<aop:aspectj-autoproxy  proxy-target-class="true"/> 表示开启自动代理。spring容器在扫描类的时候，扫描到带有`@Aspect` 的类时，会将其识别为切面类。并解析其中的切点表达式。对匹配切点的目标对象，Spring 会为目标对象创建代理对象，并将切面的通知逻辑织入目标方法的执行流程**。
 * **proxy-target-class="true" 表示强制使用CGLIB动态代理。
 * **proxy-target-class="false" 是默认值。表示采用jdk动态代理。即使写成false，当没有接口的时候，也会自动选择cglib生成代理类。**
 
@@ -171,13 +172,17 @@ public class AOPTest {
 
 
 #### 通知类型
-通知类型包括：
-
-- 前置通知：@Before 目标方法执行之前的通知
-- 后置通知：@AfterReturning 目标方法执行之后的通知
-- 环绕通知：@Around 目标方法之前添加通知，同时目标方法执行之后添加通知。
-- 异常通知：@AfterThrowing 发生异常之后执行的通知
-- 最终通知：@After 放在finally语句块中的通知
+1. 通知类型包括：    
+	- **前置通知：@Before 目标方法执行之前的通知**
+	- **后置通知：@AfterReturning 目标方法执行之后的通知**
+	- **环绕通知：@Around 目标方法之前添加通知，同时目标方法执行之后添加通知。(环绕是最大的通知，在前置通知之前，在后置通知之后。**)
+	- **异常通知：@AfterThrowing 发生异常之后执行的通知(在catch块中执行的增强代码)**
+	- **最终通知：@After 放在finally语句块中的通知**
+2. 这五个通知的具体切入顺序如下图所示  
+	![](assets/02使用Spring的AOP/file-20250731225017639.png)
+3. **除了环绕通知之外，其他通知所对应的方法都可以传入一个`JoinPoint joinPoint`参数,该参数会在Spring容器调用这个方法的时候自动传过来。可以通过该joinPoint参数获取目标方法的具体信息。比如：`getSignature()方法`：获取方法签名（如方法名、返回类型）**
+4. **对于环绕通知，可以传入一个`ProceedingJoinPoint joinPoint`参数，该参数传入是一个连接点，专门用于环绕通知（`@Around`），其核心作用是控制目标方法的执行流程并获取连接点的上下文信息**    
+	![](assets/02使用Spring的AOP/file-20250731224409468.png)
 
 接下来，编写程序来测试这几个通知的执行顺序：
 ```java
@@ -200,10 +205,17 @@ public class MyAspect {
         System.out.println("环绕通知结束");
     }
 
-    @Before("execution(* com.powernode.spring6.service.OrderService.*(..))")
-    public void beforeAdvice(){
-        System.out.println("前置通知");
-    }
+    // 前置通知  
+	@Before("通用切点()")  
+	public void beforeAdvice(JoinPoint joinPoint){  
+	System.out.println("前置通知");  
+	// 这个JoinPoint joinPoint，在Spring容器调用这个方法的时候自动传过来.  
+	// 我们可以直接用。用这个JoinPoint joinPoint干啥？  
+	// Signature signature = joinPoint.getSignature(); 获取目标方法的签名。  
+	// 通过方法的签名可以获取到一个方法的具体信息。  
+	// 获取目标方法的方法名。  
+	System.out.println("目标方法的方法名：" + joinPoint.getSignature().getName());  
+	}
 
     @AfterReturning("execution(* com.powernode.spring6.service.OrderService.*(..))")
     public void afterReturningAdvice(){
@@ -219,7 +231,6 @@ public class MyAspect {
     public void afterAdvice(){
         System.out.println("最终通知");
     }
-
 }
 ```
 ```java
@@ -254,9 +265,11 @@ public class AOPTest {
     }
 }
 ```
-执行结果：
+执行结果：  
 ![5F9597E7-7930-4384-95C2-CF64C9DDA9F3.png](https://cdn.nlark.com/yuque/0/2022/png/21376908/1665892617792-22cc74a2-6876-4cd1-bb17-87d3b5211cae.png#averageHue=%23333333&clientId=u34f8a484-08bc-4&from=ui&height=228&id=u64d09acb&originHeight=378&originWidth=656&originalType=binary&ratio=1&rotation=0&showTitle=false&size=73879&status=done&style=shadow&taskId=u5653f4f8-bba0-49ae-8455-6e4175b3973&title=&width=395)
+
 通过上面的执行结果就可以判断他们的执行顺序了，这里不再赘述。
+
 结果中没有异常通知，这是因为目标程序执行过程中没有发生异常。我们尝试让目标方法发生异常：
 ```java
 package com.powernode.spring6.service;
@@ -275,14 +288,16 @@ public class OrderService {
     }
 }
 ```
-再次执行测试程序，结果如下：
+再次执行测试程序，结果如下：    
 ![5F9597E7-7930-4384-95C2-CF64C9DDA9F3.png](https://cdn.nlark.com/yuque/0/2022/png/21376908/1665892847715-75045cd0-63b1-47f9-a77e-05911dc72339.png#averageHue=%23323130&clientId=u34f8a484-08bc-4&from=ui&height=247&id=ub9420670&originHeight=464&originWidth=858&originalType=binary&ratio=1&rotation=0&showTitle=false&size=121416&status=done&style=shadow&taskId=u28bbe456-b066-4f33-9bfe-5a815207ab9&title=&width=456)
 通过测试得知，当发生异常之后，最终通知也会执行，因为最终通知@After会出现在finally语句块中。
+
 出现异常之后，**后置通知**和**环绕通知的结束部分**不会执行。
 
-![标头.jpg](https://cdn.nlark.com/yuque/0/2023/jpeg/21376908/1692002570088-3338946f-42b3-4174-8910-7e749c31e950.jpeg#averageHue=%23f9f8f8&clientId=uc5a67c34-8a0d-4&from=paste&height=78&id=BJ5eL&originHeight=78&originWidth=1400&originalType=binary&ratio=1&rotation=0&showTitle=false&size=23158&status=done&style=shadow&taskId=u98709943-fd0b-4e51-821c-a3fc0aef219&title=&width=1400)
+
 #### 切面的先后顺序
-我们知道，业务流程当中不一定只有一个切面，可能有的切面控制事务，有的记录日志，有的进行安全控制，如果多个切面的话，顺序如何控制：**可以使用@Order注解来标识切面类，为@Order注解的value指定一个整数型的数字，数字越小，优先级越高**。
+我们知道，业务流程当中不一定只有一个切面，可能有的切面控制事务，有的记录日志，有的进行安全控制，**同一个连接点，如果有多个切面的话，顺序如何控制：可以使用==@Order注解来标识切面类==，为@Order注解的value指定一个整数型的数字，数字越小，优先级越高**。
+
 再定义一个切面类，如下：
 ```java
 package com.powernode.spring6.service;
@@ -325,8 +340,8 @@ public class YourAspect {
         System.out.println("YourAspect最终通知");
     }
 }
-
 ```
+
 ```java
 package com.powernode.spring6.service;
 
@@ -371,13 +386,13 @@ public class MyAspect {
 
 }
 ```
-执行测试程序：
+执行测试程序：    
 ![5F9597E7-7930-4384-95C2-CF64C9DDA9F3.png](https://cdn.nlark.com/yuque/0/2022/png/21376908/1665893738167-b3c55a19-6129-4615-813f-9b8dc0f17f40.png#averageHue=%23313131&clientId=u34f8a484-08bc-4&from=ui&height=288&id=u37fcbfae&originHeight=626&originWidth=982&originalType=binary&ratio=1&rotation=0&showTitle=false&size=144865&status=done&style=shadow&taskId=u6264f387-9dcc-49ac-865b-a0ac4af8167&title=&width=451)
 通过修改@Order注解的整数值来切换顺序，执行测试程序：
 ![5F9597E7-7930-4384-95C2-CF64C9DDA9F3.png](https://cdn.nlark.com/yuque/0/2022/png/21376908/1665893833282-2cbc59cc-15a5-44c4-bb20-cbdac65a750d.png#averageHue=%23313131&clientId=u34f8a484-08bc-4&from=ui&height=323&id=ubdf4d786&originHeight=648&originWidth=994&originalType=binary&ratio=1&rotation=0&showTitle=false&size=145756&status=done&style=shadow&taskId=uabd655b1-4b27-47f9-8ee1-fd1dfe91e7f&title=&width=496)
 
-![标头.jpg](https://cdn.nlark.com/yuque/0/2023/jpeg/21376908/1692002570088-3338946f-42b3-4174-8910-7e749c31e950.jpeg#averageHue=%23f9f8f8&clientId=uc5a67c34-8a0d-4&from=paste&height=78&id=QgWal&originHeight=78&originWidth=1400&originalType=binary&ratio=1&rotation=0&showTitle=false&size=23158&status=done&style=shadow&taskId=u98709943-fd0b-4e51-821c-a3fc0aef219&title=&width=1400)
-#### 优化使用切点表达式
+
+#### 优化使用切点表达式（通用切点）
 观看以下代码中的切点表达式：
 ```java
 package com.powernode.spring6.service;
@@ -424,8 +439,7 @@ public class MyAspect {
 }
 
 ```
-缺点是：
-
+缺点是：  
 - 第一：切点表达式重复写了多次，没有得到复用。
 - 第二：如果要修改切点表达式，需要修改多处，难维护。
 
@@ -478,14 +492,19 @@ public class MyAspect {
 }
 
 ```
-使用@Pointcut注解来定义独立的切点表达式。
-注意这个@Pointcut注解标注的方法随意，只是起到一个能够让@Pointcut注解编写的位置。
+* **使用@Pointcut注解来定义独立的切点表达式。该注解下面的方法只是一个标记，方法名随意，方法体中也不需要写任何代码。**
+* **其他注解复用该注解时，只需要对是通知的属性赋值该方法的名字即可**
+
+
 执行测试程序：
 ![5F9597E7-7930-4384-95C2-CF64C9DDA9F3.png](https://cdn.nlark.com/yuque/0/2022/png/21376908/1665893833282-2cbc59cc-15a5-44c4-bb20-cbdac65a750d.png#averageHue=%23313131&clientId=u34f8a484-08bc-4&from=ui&height=323&id=SQAHo&originHeight=648&originWidth=994&originalType=binary&ratio=1&rotation=0&showTitle=false&size=145756&status=done&style=shadow&taskId=uabd655b1-4b27-47f9-8ee1-fd1dfe91e7f&title=&width=496)
 
-![标头.jpg](https://cdn.nlark.com/yuque/0/2023/jpeg/21376908/1692002570088-3338946f-42b3-4174-8910-7e749c31e950.jpeg#averageHue=%23f9f8f8&clientId=uc5a67c34-8a0d-4&from=paste&height=78&id=hmODS&originHeight=78&originWidth=1400&originalType=binary&ratio=1&rotation=0&showTitle=false&size=23158&status=done&style=shadow&taskId=u98709943-fd0b-4e51-821c-a3fc0aef219&title=&width=1400)
+
 #### 全注解式开发AOP
-就是编写一个类，在这个类上面使用大量注解来代替spring的配置文件，spring配置文件消失了，如下：
+* **就是编写一个类，在这个类上面使用大量注解来代替spring的配置文件，spring配置文件消失了。**
+* **使用@Configuration注解写在类上代表该类是一个配置类；使用@ComponentScan注解来声明扫描的包名；@EnableAspectJAutoProxy表示启用aspectj的自动代理机制(里面的参数指定是否强制使用cglib代理)**
+* **使用该配置文件时，就不再用`ClassPathXmlApplicationContext`去读取xml文件了，而是使用`AnnotationConfigApplicationContext(配置类.class)`去进行进行配置的加载和Bean创建等工作**
+
 ```java
 package com.powernode.spring6.service;
 
@@ -508,11 +527,11 @@ public void testAOPWithAllAnnotation(){
     orderService.generate();
 }
 ```
-执行结果如下：
+执行结果如下：  
 ![5F9597E7-7930-4384-95C2-CF64C9DDA9F3.png](https://cdn.nlark.com/yuque/0/2022/png/21376908/1665893833282-2cbc59cc-15a5-44c4-bb20-cbdac65a750d.png#averageHue=%23313131&clientId=u34f8a484-08bc-4&from=ui&height=323&id=LSG4d&originHeight=648&originWidth=994&originalType=binary&ratio=1&rotation=0&showTitle=false&size=145756&status=done&style=shadow&taskId=uabd655b1-4b27-47f9-8ee1-fd1dfe91e7f&title=&width=496)
 
-![标头.jpg](https://cdn.nlark.com/yuque/0/2023/jpeg/21376908/1692002570088-3338946f-42b3-4174-8910-7e749c31e950.jpeg#averageHue=%23f9f8f8&clientId=uc5a67c34-8a0d-4&from=paste&height=78&id=edX9r&originHeight=78&originWidth=1400&originalType=binary&ratio=1&rotation=0&showTitle=false&size=23158&status=done&style=shadow&taskId=u98709943-fd0b-4e51-821c-a3fc0aef219&title=&width=1400)
-### 15.4.3 基于XML配置方式的AOP（了解）
+
+### 3.基于XML配置方式的AOP（了解）
 第一步：编写目标类
 ```java
 package com.powernode.spring6.service;
@@ -532,10 +551,10 @@ import org.aspectj.lang.ProceedingJoinPoint;
 
 // 负责计时的切面类
 public class TimerAspect {
-    
+	//通知
     public void time(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
         long begin = System.currentTimeMillis();
-        //执行目标
+        //执行目标方法
         proceedingJoinPoint.proceed();
         long end = System.currentTimeMillis();
         System.out.println("耗时"+(end - begin)+"毫秒");
@@ -590,340 +609,7 @@ public class AOPTest3 {
 }
 
 ```
-执行结果：
+执行结果：  
 ![5F9597E7-7930-4384-95C2-CF64C9DDA9F3.png](https://cdn.nlark.com/yuque/0/2022/png/21376908/1665902800121-49540c48-d6c2-4909-874d-e1a485e67ea5.png#averageHue=%23333333&clientId=u34f8a484-08bc-4&from=ui&height=135&id=uc93a20cf&originHeight=306&originWidth=794&originalType=binary&ratio=1&rotation=0&showTitle=false&size=73341&status=done&style=shadow&taskId=u9a1ba488-afcf-493f-8b12-389153b34bf&title=&width=351)
 
-![标头.jpg](https://cdn.nlark.com/yuque/0/2023/jpeg/21376908/1692002570088-3338946f-42b3-4174-8910-7e749c31e950.jpeg#averageHue=%23f9f8f8&clientId=uc5a67c34-8a0d-4&from=paste&height=78&id=Eiujl&originHeight=78&originWidth=1400&originalType=binary&ratio=1&rotation=0&showTitle=false&size=23158&status=done&style=shadow&taskId=u98709943-fd0b-4e51-821c-a3fc0aef219&title=&width=1400)
-## 15.5 AOP的实际案例：事务处理
-项目中的事务控制是在所难免的。在一个业务流程当中，可能需要多条DML语句共同完成，为了保证数据的安全，这多条DML语句要么同时成功，要么同时失败。这就需要添加事务控制的代码。例如以下伪代码：
-```java
-class 业务类1{
-    public void 业务方法1(){
-        try{
-            // 开启事务
-            startTransaction();
-            
-            // 执行核心业务逻辑
-            step1();
-            step2();
-            step3();
-            ....
-            
-            // 提交事务
-            commitTransaction();
-        }catch(Exception e){
-            // 回滚事务
-            rollbackTransaction();
-        }
-    }
-    public void 业务方法2(){
-        try{
-            // 开启事务
-            startTransaction();
-            
-            // 执行核心业务逻辑
-            step1();
-            step2();
-            step3();
-            ....
-            
-            // 提交事务
-            commitTransaction();
-        }catch(Exception e){
-            // 回滚事务
-            rollbackTransaction();
-        }
-    }
-    public void 业务方法3(){
-        try{
-            // 开启事务
-            startTransaction();
-            
-            // 执行核心业务逻辑
-            step1();
-            step2();
-            step3();
-            ....
-            
-            // 提交事务
-            commitTransaction();
-        }catch(Exception e){
-            // 回滚事务
-            rollbackTransaction();
-        }
-    }
-}
 
-class 业务类2{
-    public void 业务方法1(){
-        try{
-            // 开启事务
-            startTransaction();
-            
-            // 执行核心业务逻辑
-            step1();
-            step2();
-            step3();
-            ....
-            
-            // 提交事务
-            commitTransaction();
-        }catch(Exception e){
-            // 回滚事务
-            rollbackTransaction();
-        }
-    }
-    public void 业务方法2(){
-        try{
-            // 开启事务
-            startTransaction();
-            
-            // 执行核心业务逻辑
-            step1();
-            step2();
-            step3();
-            ....
-            
-            // 提交事务
-            commitTransaction();
-        }catch(Exception e){
-            // 回滚事务
-            rollbackTransaction();
-        }
-    }
-    public void 业务方法3(){
-        try{
-            // 开启事务
-            startTransaction();
-            
-            // 执行核心业务逻辑
-            step1();
-            step2();
-            step3();
-            ....
-            
-            // 提交事务
-            commitTransaction();
-        }catch(Exception e){
-            // 回滚事务
-            rollbackTransaction();
-        }
-    }
-}
-//......
-```
-可以看到，这些业务类中的每一个业务方法都是需要控制事务的，而控制事务的代码又是固定的格式，都是：
-```java
-try{
-    // 开启事务
-    startTransaction();
-
-    // 执行核心业务逻辑
-    //......
-
-    // 提交事务
-    commitTransaction();
-}catch(Exception e){
-    // 回滚事务
-    rollbackTransaction();
-}
-```
-这个控制事务的代码就是和业务逻辑没有关系的“**交叉业务**”。以上伪代码当中可以看到这些交叉业务的代码没有得到复用，并且如果这些交叉业务代码需要修改，那必然需要修改多处，难维护，怎么解决？可以采用AOP思想解决。可以把以上控制事务的代码作为环绕通知，切入到目标类的方法当中。接下来我们做一下这件事，有两个业务类，如下：
-```java
-package com.powernode.spring6.biz;
-
-import org.springframework.stereotype.Component;
-
-@Component
-// 业务类
-public class AccountService {
-    // 转账业务方法
-    public void transfer(){
-        System.out.println("正在进行银行账户转账");
-    }
-    // 取款业务方法
-    public void withdraw(){
-        System.out.println("正在进行取款操作");
-    }
-}
-
-```
-```java
-package com.powernode.spring6.biz;
-
-import org.springframework.stereotype.Component;
-
-@Component
-// 业务类
-public class OrderService {
-    // 生成订单
-    public void generate(){
-        System.out.println("正在生成订单");
-    }
-    // 取消订单
-    public void cancel(){
-        System.out.println("正在取消订单");
-    }
-}
-```
-注意，以上两个业务类已经纳入spring bean的管理，因为都添加了@Component注解。
-接下来我们给以上两个业务类的4个方法添加事务控制代码，使用AOP来完成：
-```java
-package com.powernode.spring6.biz;
-
-import org.aspectj.lang.ProceedingJoinPoint;
-import org.aspectj.lang.annotation.Around;
-import org.aspectj.lang.annotation.Aspect;
-import org.springframework.stereotype.Component;
-
-@Aspect
-@Component
-// 事务切面类
-public class TransactionAspect {
-    
-    @Around("execution(* com.powernode.spring6.biz..*(..))")
-    public void aroundAdvice(ProceedingJoinPoint proceedingJoinPoint){
-        try {
-            System.out.println("开启事务");
-            // 执行目标
-            proceedingJoinPoint.proceed();
-            System.out.println("提交事务");
-        } catch (Throwable e) {
-            System.out.println("回滚事务");
-        }
-    }
-}
-
-```
-你看，这个事务控制代码是不是只需要写一次就行了，并且修改起来也没有成本。编写测试程序：
-```java
-package com.powernode.spring6.test;
-
-import com.powernode.spring6.biz.AccountService;
-import com.powernode.spring6.biz.OrderService;
-import com.powernode.spring6.service.Spring6Configuration;
-import org.junit.Test;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-
-public class AOPTest2 {
-    @Test
-    public void testTransaction(){
-        ApplicationContext applicationContext = new AnnotationConfigApplicationContext(Spring6Configuration.class);
-        OrderService orderService = applicationContext.getBean("orderService", OrderService.class);
-        AccountService accountService = applicationContext.getBean("accountService", AccountService.class);
-        // 生成订单
-        orderService.generate();
-        // 取消订单
-        orderService.cancel();
-        // 转账
-        accountService.transfer();
-        // 取款
-        accountService.withdraw();
-    }
-}
-```
-执行结果：
-![5F9597E7-7930-4384-95C2-CF64C9DDA9F3.png](https://cdn.nlark.com/yuque/0/2022/png/21376908/1665899075177-6660d491-06d4-4296-b69a-b54716179c9d.png#averageHue=%23313131&clientId=u34f8a484-08bc-4&from=ui&height=365&id=ue7ff086e&originHeight=676&originWidth=846&originalType=binary&ratio=1&rotation=0&showTitle=false&size=125447&status=done&style=shadow&taskId=u8dd026e7-67bb-486c-bc8b-8ce1fb7e15c&title=&width=457)
-通过测试可以看到，所有的业务方法都添加了事务控制的代码。
-
-![标头.jpg](https://cdn.nlark.com/yuque/0/2023/jpeg/21376908/1692002570088-3338946f-42b3-4174-8910-7e749c31e950.jpeg#averageHue=%23f9f8f8&clientId=uc5a67c34-8a0d-4&from=paste&height=78&id=qeZ3v&originHeight=78&originWidth=1400&originalType=binary&ratio=1&rotation=0&showTitle=false&size=23158&status=done&style=shadow&taskId=u98709943-fd0b-4e51-821c-a3fc0aef219&title=&width=1400)
-## 15.6 AOP的实际案例：安全日志
-需求是这样的：项目开发结束了，已经上线了。运行正常。客户提出了新的需求：凡事在系统中进行修改操作的，删除操作的，新增操作的，都要把这个人记录下来。因为这几个操作是属于危险行为。例如有业务类和业务方法：
-```java
-package com.powernode.spring6.biz;
-
-import org.springframework.stereotype.Component;
-
-@Component
-//用户业务
-public class UserService {
-    public void getUser(){
-        System.out.println("获取用户信息");
-    }
-    public void saveUser(){
-        System.out.println("保存用户");
-    }
-    public void deleteUser(){
-        System.out.println("删除用户");
-    }
-    public void modifyUser(){
-        System.out.println("修改用户");
-    }
-}
-```
-
-```java
-package com.powernode.spring6.biz;
-
-import org.springframework.stereotype.Component;
-
-// 商品业务类
-@Component
-public class ProductService {
-    public void getProduct(){
-        System.out.println("获取商品信息");
-    }
-    public void saveProduct(){
-        System.out.println("保存商品");
-    }
-    public void deleteProduct(){
-        System.out.println("删除商品");
-    }
-    public void modifyProduct(){
-        System.out.println("修改商品");
-    }
-}
-
-
-```
-注意：已经添加了@Component注解。
-接下来我们使用aop来解决上面的需求：编写一个负责安全的切面类
-```java
-package com.powernode.spring6.biz;
-
-import org.aspectj.lang.JoinPoint;
-import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.annotation.Before;
-import org.aspectj.lang.annotation.Pointcut;
-import org.springframework.stereotype.Component;
-
-@Component
-@Aspect
-public class SecurityAspect {
-
-    @Pointcut("execution(* com.powernode.spring6.biz..save*(..))")
-    public void savePointcut(){}
-
-    @Pointcut("execution(* com.powernode.spring6.biz..delete*(..))")
-    public void deletePointcut(){}
-
-    @Pointcut("execution(* com.powernode.spring6.biz..modify*(..))")
-    public void modifyPointcut(){}
-
-    @Before("savePointcut() || deletePointcut() || modifyPointcut()")
-    public void beforeAdivce(JoinPoint joinpoint){
-        System.out.println("XXX操作员正在操作"+joinpoint.getSignature().getName()+"方法");
-    }
-}
-
-```
-```java
-@Test
-public void testSecurity(){
-    ApplicationContext applicationContext = new AnnotationConfigApplicationContext(Spring6Configuration.class);
-    UserService userService = applicationContext.getBean("userService", UserService.class);
-    ProductService productService = applicationContext.getBean("productService", ProductService.class);
-    userService.getUser();
-    userService.saveUser();
-    userService.deleteUser();
-    userService.modifyUser();
-    productService.getProduct();
-    productService.saveProduct();
-    productService.deleteProduct();
-    productService.modifyProduct();
-}
-```
-执行结果：
-![5F9597E7-7930-4384-95C2-CF64C9DDA9F3.png](https://cdn.nlark.com/yuque/0/2022/png/21376908/1665901327786-9bfab382-61a3-4d1e-abe5-728b242eb3a2.png#averageHue=%23333333&clientId=u34f8a484-08bc-4&from=ui&height=425&id=ue0b3f754&originHeight=852&originWidth=844&originalType=binary&ratio=1&rotation=0&showTitle=false&size=203543&status=done&style=shadow&taskId=ucddfd42f-50b8-425d-9ace-c36b67eef63&title=&width=421)
-![标头.jpg](https://cdn.nlark.com/yuque/0/2023/jpeg/21376908/1692002570088-3338946f-42b3-4174-8910-7e749c31e950.jpeg#averageHue=%23f9f8f8&clientId=uc5a67c34-8a0d-4&from=paste&height=78&id=Wcrz9&originHeight=78&originWidth=1400&originalType=binary&ratio=1&rotation=0&showTitle=false&size=23158&status=done&style=shadow&taskId=u98709943-fd0b-4e51-821c-a3fc0aef219&title=&width=1400)
