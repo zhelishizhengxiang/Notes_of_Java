@@ -42,7 +42,7 @@ webapp目录没有小蓝点怎么办？添加web支持
 </web-app>
 ```
 * **在设置DispatcherServlet的时候，通过\<init-param>来设置SpringMVC配置文件的路径和名字。这些配置是在DispatcherServlet的init方法执行时设置的。其中\<param-name>指定为contextConfigLocation；\<param-value>指定为classpath:springmvc.xml，表示在类的根路径下有一个文件是springmvc.xml，该文件就是SpringMVC的配置文件。**
-* **\<load-on-startup>1</load-on-startup>建议加上，这样可以提高用户第一次访问的效率。表示在web服务器启动Dispatc时就创建并初始化Servlet。** 该参数默认值为-1，表示第一次访问才创建该Servlet对象。
+* **\<load-on-startup>1</load-on-startup>建议加上，这样可以提高用户第一次访问的效率。表示在web服务器启动时就创建并初始化DispatcherServlet。** 该参数默认值为-1，表示第一次访问才创建该Servlet对象。
 
 
 ## 4.编写IndexController

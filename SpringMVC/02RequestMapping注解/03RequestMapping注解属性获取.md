@@ -150,7 +150,7 @@ public String testValueAnt(){
     return "testValueAnt";
 }
 ```
-启动服务器发现报错了：
+启动服务器发现报错了：  
 ![image.png](https://cdn.nlark.com/yuque/0/2024/png/21376908/1710410631877-81bfcc14-3ead-4f2c-99cf-69e0e39c9b3e.png#averageHue=%23fcfbfa&clientId=u9e0c3730-20d1-4&from=paste&height=176&id=u4e591839&originHeight=176&originWidth=963&originalType=binary&ratio=1&rotation=0&showTitle=false&size=29038&status=done&style=shadow&taskId=u56772db8-8c87-4a36-80c7-6b3ff2a47cf&title=&width=963)
 以上写法在Spring5的时候是支持的，但是在Spring6中进行了严格的规定，** 通配符只能出现在路径的末尾，例如：
 ```java
@@ -453,7 +453,7 @@ username=lisi&userpwd=123                                                       
 2. @RequestMapping(value="/login", params={**"!username"**, "password"}) 表示：**请求参数中不能包含username参数，但必须包含password参数，才能与当前标注的方法进行映射**。
 3. @RequestMapping(value="/login", params={**"username=admin"**, "password"}) 表示：**请求参数中必须包含username参数，并且参数的值必须是admin，另外也必须包含password参数，才能与当前标注的方法进行映射。**
 4. @RequestMapping(value="/login", params={**"username!=admin"**, "password"}) 表示：**请求参数中必须包含username参数，但参数的值不能是admin，另外也必须包含password参数，才能与当前标注的方法进行映射**。
-5. **注意：上述几个例子中只是设置了包含或者不包含上面这两个属性，但是请求的参数包含其他参数也可以，比如请求参数不止这两个，还由一个age，也是可以对应的方法进行映射的**
+5. **注意：上述几个例子中只是设置了包含或者不包含上面这两个属性，但是请求的参数包含其他参数也可以，比如请求参数不止这两个，还有一个age，也是可以对应的方法进行映射的**
 
 注意：如果前端提交的参数，和后端要求的请求参数不一致，则出现400错误！！！
 

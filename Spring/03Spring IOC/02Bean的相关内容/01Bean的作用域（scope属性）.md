@@ -72,7 +72,7 @@ public void testScope(){
 
 
 ## 5.2 多例prototype
-**如果想让Spring的Bean对象以多例的形式存在，可以在bean标签中指定scope属性的值为：**prototype**，这样Spring会在每一次执行getBean()方法的时候创建Bean对象，调用几次则创建几次。**
+**如果想让Spring的Bean对象以多例的形式存在，可以在bean标签中指定scope属性的值为：prototype，这样Spring会在每一次执行getBean()方法的时候创建Bean对象，调用几次则创建几次。**
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
@@ -101,6 +101,7 @@ public void testScope(){
 ```
 执行结果：  
 ![image.png](https://cdn.nlark.com/yuque/0/2022/png/21376908/1665220593171-19b1a750-551c-441d-8f8f-9c7aa7601e77.png#averageHue=%23927c63&clientId=ufc7e21e2-2cbb-4&from=paste&height=198&id=udb383895&originHeight=198&originWidth=616&originalType=binary&ratio=1&rotation=0&showTitle=false&size=32800&status=done&style=shadow&taskId=u3dea7c4e-0cc4-4a5e-ad06-76207e442c6&title=&width=616)
+
 我们可以把测试代码中的getBean()方法所在行代码注释掉：
 ```java
 @Test
