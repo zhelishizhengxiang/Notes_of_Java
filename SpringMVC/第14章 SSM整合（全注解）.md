@@ -1,4 +1,4 @@
-![标头.jpg](https://cdn.nlark.com/yuque/0/2023/jpeg/21376908/1692002570088-3338946f-42b3-4174-8910-7e749c31e950.jpeg#averageHue=%23f9f8f8&clientId=uc5a67c34-8a0d-4&from=paste&height=78&id=DsWx0&originHeight=78&originWidth=1400&originalType=binary&ratio=1&rotation=0&showTitle=false&size=23158&status=done&style=shadow&taskId=u98709943-fd0b-4e51-821c-a3fc0aef219&title=&width=1400)
+
 # 引入相关依赖
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
@@ -85,14 +85,14 @@
 </project>
 ```
 
-![标头.jpg](https://cdn.nlark.com/yuque/0/2023/jpeg/21376908/1692002570088-3338946f-42b3-4174-8910-7e749c31e950.jpeg#averageHue=%23f9f8f8&clientId=uc5a67c34-8a0d-4&from=paste&height=78&id=VeuPi&originHeight=78&originWidth=1400&originalType=binary&ratio=1&rotation=0&showTitle=false&size=23158&status=done&style=shadow&taskId=u98709943-fd0b-4e51-821c-a3fc0aef219&title=&width=1400)
+
 # SSM整合
 ## 创建包结构
 ![image.png](https://cdn.nlark.com/yuque/0/2024/png/21376908/1711952550136-9bf37050-0666-41ea-8bd0-4e77c9f4c4e5.png#averageHue=%233f4345&clientId=ucab011ae-0d3f-4&from=paste&height=124&id=uebdf7be6&originHeight=124&originWidth=201&originalType=binary&ratio=1&rotation=0&showTitle=false&size=3201&status=done&style=none&taskId=u1c8f6ce2-bd07-4c39-980e-95f3ceab9cc&title=&width=201)
 ## 创建webapp目录
 ![image.png](https://cdn.nlark.com/yuque/0/2024/png/21376908/1711957803441-365c51d0-e046-4230-b02d-a1c192c599ae.png#averageHue=%2345536a&clientId=ua0f2ffef-430b-4&from=paste&height=60&id=ue83dc241&originHeight=60&originWidth=196&originalType=binary&ratio=1&rotation=0&showTitle=false&size=2552&status=done&style=none&taskId=u7b485e34-b1a4-4df6-beb7-18813cb3765&title=&width=196)
 
-![标头.jpg](https://cdn.nlark.com/yuque/0/2023/jpeg/21376908/1692002570088-3338946f-42b3-4174-8910-7e749c31e950.jpeg#averageHue=%23f9f8f8&clientId=uc5a67c34-8a0d-4&from=paste&height=78&id=K67mF&originHeight=78&originWidth=1400&originalType=binary&ratio=1&rotation=0&showTitle=false&size=23158&status=done&style=shadow&taskId=u98709943-fd0b-4e51-821c-a3fc0aef219&title=&width=1400)
+
 ## Spring整合MyBatis
 ### 编写jdbc.properties
 在类根路径下创建属性配置文件，配置连接数据库的信息：jdbc.properties
@@ -103,7 +103,6 @@ jdbc.username=root
 jdbc.password=1234
 ```
 
-![标头.jpg](https://cdn.nlark.com/yuque/0/2023/jpeg/21376908/1692002570088-3338946f-42b3-4174-8910-7e749c31e950.jpeg#averageHue=%23f9f8f8&clientId=uc5a67c34-8a0d-4&from=paste&height=78&id=s6wf2&originHeight=78&originWidth=1400&originalType=binary&ratio=1&rotation=0&showTitle=false&size=23158&status=done&style=shadow&taskId=u98709943-fd0b-4e51-821c-a3fc0aef219&title=&width=1400)
 
 ### 编写DataSourceConfig
 ```java
@@ -136,7 +135,7 @@ public class DataSourceConfig {
     @Value("${jdbc.password}")
     private String password;
 
-    @Bean
+    @Bean //相当配置类中写，反Bean返回后会被Spring容器管理
     public DataSource dataSource(){
         DruidDataSource dataSource = new DruidDataSource();
         dataSource.setDriverClassName(driver);
@@ -149,7 +148,7 @@ public class DataSourceConfig {
 
 ```
 
-![标头.jpg](https://cdn.nlark.com/yuque/0/2023/jpeg/21376908/1692002570088-3338946f-42b3-4174-8910-7e749c31e950.jpeg#averageHue=%23f9f8f8&clientId=uc5a67c34-8a0d-4&from=paste&height=78&id=VAgVk&originHeight=78&originWidth=1400&originalType=binary&ratio=1&rotation=0&showTitle=false&size=23158&status=done&style=shadow&taskId=u98709943-fd0b-4e51-821c-a3fc0aef219&title=&width=1400)
+
 ### 编写MyBatisConfig
 ```java
 package com.powernode.ssm.config;
@@ -169,15 +168,16 @@ import javax.sql.DataSource;
  */
 public class MyBatisConfig {
 
-    @Bean
+    @Bean //创建SqlSessionFactoryBean
     public SqlSessionFactoryBean sqlSessionFactory(DataSource dataSource){
         SqlSessionFactoryBean sqlSessionFactoryBean = new SqlSessionFactoryBean();
         sqlSessionFactoryBean.setDataSource(dataSource);
+        //起别名
         sqlSessionFactoryBean.setTypeAliasesPackage("com.powernode.ssm.bean");
         return sqlSessionFactoryBean;
     }
 
-    @Bean
+    @Bean 
     public MapperScannerConfigurer mapperScannerConfigurer(){
         MapperScannerConfigurer msc = new MapperScannerConfigurer();
         msc.setBasePackage("com.powernode.ssm.dao");
@@ -187,7 +187,6 @@ public class MyBatisConfig {
 }
 ```
 
-![标头.jpg](https://cdn.nlark.com/yuque/0/2023/jpeg/21376908/1692002570088-3338946f-42b3-4174-8910-7e749c31e950.jpeg#averageHue=%23f9f8f8&clientId=uc5a67c34-8a0d-4&from=paste&height=78&id=RzaWO&originHeight=78&originWidth=1400&originalType=binary&ratio=1&rotation=0&showTitle=false&size=23158&status=done&style=shadow&taskId=u98709943-fd0b-4e51-821c-a3fc0aef219&title=&width=1400)
 ### 编写SpringConfig
 ```java
 package com.powernode.ssm.config;
@@ -204,15 +203,19 @@ import org.springframework.context.annotation.PropertySource;
  * Author: 老杜@动力节点
  * Version: 1.0
  */
+ //标注该类是要给配置类
 @Configuration
+//包扫描路径配置过dao层的包扫描路径，spring mvc会配置controller的配置路径，所以此处只需要配置service
 @ComponentScan({"com.powernode.ssm.service"})
+//使用该注解引入外部配置文件
 @PropertySource("classpath:jdbc.properties")
+//引入其他的配置类，被import的类就不用再写@Configuration类了
 @Import({DataSourceConfig.class, MyBatisConfig.class})
 public class SpringConfig {
 }
 ```
 
-![标头.jpg](https://cdn.nlark.com/yuque/0/2023/jpeg/21376908/1692002570088-3338946f-42b3-4174-8910-7e749c31e950.jpeg#averageHue=%23f9f8f8&clientId=uc5a67c34-8a0d-4&from=paste&height=78&id=yhKbF&originHeight=78&originWidth=1400&originalType=binary&ratio=1&rotation=0&showTitle=false&size=23158&status=done&style=shadow&taskId=u98709943-fd0b-4e51-821c-a3fc0aef219&title=&width=1400)
+
 ## Spring整合Spring MVC
 ### 编写WebAppInitializer（web.xml）
 ```java
@@ -279,7 +282,7 @@ public class WebAppInitializer extends AbstractAnnotationConfigDispatcherServlet
 
 ```
 
-![标头.jpg](https://cdn.nlark.com/yuque/0/2023/jpeg/21376908/1692002570088-3338946f-42b3-4174-8910-7e749c31e950.jpeg#averageHue=%23f9f8f8&clientId=uc5a67c34-8a0d-4&from=paste&height=78&id=TYPxG&originHeight=78&originWidth=1400&originalType=binary&ratio=1&rotation=0&showTitle=false&size=23158&status=done&style=shadow&taskId=u98709943-fd0b-4e51-821c-a3fc0aef219&title=&width=1400)
+
 ### 编写SpringMvcConfig
 ```java
 package com.powernode.ssm.config;
@@ -307,6 +310,7 @@ import java.util.List;
  */
 @Configuration
 @ComponentScan("com.powernode.ssm.handler")
+//开启注解驱动
 @EnableWebMvc
 public class SpringMvcConfig implements WebMvcConfigurer {
 
@@ -359,16 +363,17 @@ public class SpringMvcConfig implements WebMvcConfigurer {
 
 ```
 
-![标头.jpg](https://cdn.nlark.com/yuque/0/2023/jpeg/21376908/1692002570088-3338946f-42b3-4174-8910-7e749c31e950.jpeg#averageHue=%23f9f8f8&clientId=uc5a67c34-8a0d-4&from=paste&height=78&id=eelvG&originHeight=78&originWidth=1400&originalType=binary&ratio=1&rotation=0&showTitle=false&size=23158&status=done&style=shadow&taskId=u98709943-fd0b-4e51-821c-a3fc0aef219&title=&width=1400)
+
 ## 添加事务控制
 第一步：在SpringConfig中开启事务管理器
 ```java
-@EnableTransactionManagement
+@EnableTransactionManagement //事务注解驱动器
 public class SpringConfig {
 }
 ```
 第二步：在DataSourceConfig中添加事务管理器对象
 ```java
+//配置事务管理器
 @Bean
 public PlatformTransactionManager platformTransactionManager(DataSource dataSource){
     DataSourceTransactionManager dataSourceTransactionManager = new DataSourceTransactionManager();
@@ -382,12 +387,11 @@ public PlatformTransactionManager platformTransactionManager(DataSource dataSour
 public class UserService {}
 ```
 
-![标头.jpg](https://cdn.nlark.com/yuque/0/2023/jpeg/21376908/1692002570088-3338946f-42b3-4174-8910-7e749c31e950.jpeg#averageHue=%23f9f8f8&clientId=uc5a67c34-8a0d-4&from=paste&height=78&id=Cq6UA&originHeight=78&originWidth=1400&originalType=binary&ratio=1&rotation=0&showTitle=false&size=23158&status=done&style=shadow&taskId=u98709943-fd0b-4e51-821c-a3fc0aef219&title=&width=1400)
 # 实现功能测试ssm整合
 ## 数据库表
 ![image.png](https://cdn.nlark.com/yuque/0/2024/png/21376908/1711957269218-f37ceadc-6aa6-4be0-9c5b-e35237cee177.png#averageHue=%23131110&clientId=ua0f2ffef-430b-4&from=paste&height=184&id=ue0f85c34&originHeight=184&originWidth=563&originalType=binary&ratio=1&rotation=0&showTitle=false&size=10702&status=done&style=none&taskId=ubb189907-5b69-4c8e-8104-5b513cc3ae3&title=&width=563)
 
-![标头.jpg](https://cdn.nlark.com/yuque/0/2023/jpeg/21376908/1692002570088-3338946f-42b3-4174-8910-7e749c31e950.jpeg#averageHue=%23f9f8f8&clientId=uc5a67c34-8a0d-4&from=paste&height=78&id=V9HBw&originHeight=78&originWidth=1400&originalType=binary&ratio=1&rotation=0&showTitle=false&size=23158&status=done&style=shadow&taskId=u98709943-fd0b-4e51-821c-a3fc0aef219&title=&width=1400)
+
 ## pojo类编写
 ```java
 package com.powernode.ssm.bean;
@@ -460,7 +464,7 @@ public class User {
 
 ```
 
-![标头.jpg](https://cdn.nlark.com/yuque/0/2023/jpeg/21376908/1692002570088-3338946f-42b3-4174-8910-7e749c31e950.jpeg#averageHue=%23f9f8f8&clientId=uc5a67c34-8a0d-4&from=paste&height=78&id=RQ2H8&originHeight=78&originWidth=1400&originalType=binary&ratio=1&rotation=0&showTitle=false&size=23158&status=done&style=shadow&taskId=u98709943-fd0b-4e51-821c-a3fc0aef219&title=&width=1400)
+
 ## dao编写
 ```java
 package com.powernode.ssm.dao;
@@ -484,7 +488,6 @@ public interface UserDao {
 
 ```
 
-![标头.jpg](https://cdn.nlark.com/yuque/0/2023/jpeg/21376908/1692002570088-3338946f-42b3-4174-8910-7e749c31e950.jpeg#averageHue=%23f9f8f8&clientId=uc5a67c34-8a0d-4&from=paste&height=78&id=vSaVj&originHeight=78&originWidth=1400&originalType=binary&ratio=1&rotation=0&showTitle=false&size=23158&status=done&style=shadow&taskId=u98709943-fd0b-4e51-821c-a3fc0aef219&title=&width=1400)
 ## service编写
 ```java
 package com.powernode.ssm.service;
@@ -539,7 +542,7 @@ public class UserServiceImpl implements UserService {
 }
 ```
 
-![标头.jpg](https://cdn.nlark.com/yuque/0/2023/jpeg/21376908/1692002570088-3338946f-42b3-4174-8910-7e749c31e950.jpeg#averageHue=%23f9f8f8&clientId=uc5a67c34-8a0d-4&from=paste&height=78&id=He68W&originHeight=78&originWidth=1400&originalType=binary&ratio=1&rotation=0&showTitle=false&size=23158&status=done&style=shadow&taskId=u98709943-fd0b-4e51-821c-a3fc0aef219&title=&width=1400)
+
 ## handler编写
 ```java
 package com.powernode.ssm.handler;
@@ -574,7 +577,7 @@ public class UserHandler {
 
 ```
 
-![标头.jpg](https://cdn.nlark.com/yuque/0/2023/jpeg/21376908/1692002570088-3338946f-42b3-4174-8910-7e749c31e950.jpeg#averageHue=%23f9f8f8&clientId=uc5a67c34-8a0d-4&from=paste&height=78&id=kQyCm&originHeight=78&originWidth=1400&originalType=binary&ratio=1&rotation=0&showTitle=false&size=23158&status=done&style=shadow&taskId=u98709943-fd0b-4e51-821c-a3fc0aef219&title=&width=1400)
+
 ## 前端发送ajax
 ### 引入js文件
 ![image.png](https://cdn.nlark.com/yuque/0/2024/png/21376908/1711957985712-688287fe-084c-41ed-9938-79374005a147.png#averageHue=%233e4245&clientId=ua0f2ffef-430b-4&from=paste&height=102&id=uc272a66d&originHeight=102&originWidth=198&originalType=binary&ratio=1&rotation=0&showTitle=false&size=3313&status=done&style=none&taskId=u8e02853c-864f-4add-b7fd-8a9b2628c6c&title=&width=198)
@@ -586,7 +589,6 @@ public void configureDefaultServletHandling(DefaultServletHandlerConfigurer conf
 }
 ```
 
-![标头.jpg](https://cdn.nlark.com/yuque/0/2023/jpeg/21376908/1692002570088-3338946f-42b3-4174-8910-7e749c31e950.jpeg#averageHue=%23f9f8f8&clientId=uc5a67c34-8a0d-4&from=paste&height=78&id=a92zq&originHeight=78&originWidth=1400&originalType=binary&ratio=1&rotation=0&showTitle=false&size=23158&status=done&style=shadow&taskId=u98709943-fd0b-4e51-821c-a3fc0aef219&title=&width=1400)
 ### 视图控制器
 ```java
 public void addViewControllers(ViewControllerRegistry registry) {
@@ -632,6 +634,6 @@ public void addViewControllers(ViewControllerRegistry registry) {
 测试结果：
 ![image.png](https://cdn.nlark.com/yuque/0/2024/png/21376908/1711959488460-669e8849-5c0d-47d1-8c46-07c668c6909d.png#averageHue=%23f0efee&clientId=ua0f2ffef-430b-4&from=paste&height=160&id=ub2e8d92c&originHeight=160&originWidth=1480&originalType=binary&ratio=1&rotation=0&showTitle=false&size=23433&status=done&style=shadow&taskId=u242e65f9-4b4d-4878-9a73-99e3874ea4b&title=&width=1480)
 
-![标头.jpg](https://cdn.nlark.com/yuque/0/2023/jpeg/21376908/1692002570088-3338946f-42b3-4174-8910-7e749c31e950.jpeg#averageHue=%23f9f8f8&clientId=uc5a67c34-8a0d-4&from=paste&height=78&id=rLd4a&originHeight=78&originWidth=1400&originalType=binary&ratio=1&rotation=0&showTitle=false&size=23158&status=done&style=shadow&taskId=u98709943-fd0b-4e51-821c-a3fc0aef219&title=&width=1400)
+
 
 

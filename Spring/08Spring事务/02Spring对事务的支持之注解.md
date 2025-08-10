@@ -435,7 +435,7 @@ public class Spring6Config {
 
 1. **@EnableTransactionManagement用于启动事务注解驱动器，即告诉Spring框架，采用注解的方式去控制事务**
 2. **配置文件中的Bean可以在类中使用Bean注解来标注get方法来达到目的。具体做法如下**：
-	* **@Bean有一个属性为name，用于标识方法中返回的java对象名字，相当于xml文件中配置Bean的id**
+	* **@Bean有属性name或者value，用于标识方法中返回的java对象名字，相当于xml文件中配置Bean的id。属性未指定时，Spring 会将定义该 Bean 的方法名作为 Bean 的默认名称。**
 	* **用@Bean注解去修饰一个get方法。并且该get方法的属性中如果有非简单类型，那么就需要传入一个该类型参数。这样的话Spring在调用这个方法的时候会自动给我们传递过来一个dataSource对象。**
 	* **返回值就是该Bean的对象，这个java对象会自动纳入IoC容器管理。 即返回的对象就是Spring容器当中的一个Bean了 **
 	* **方法体中写的内容就是将对象new出来，之后给属性赋值。如果是简单类型，直接调用setter来设置属性的值；如果是非简单类型，虽然也是调用setter，但是设置的值是方法的形参。之后返回该java对象**
@@ -464,5 +464,3 @@ public void testNoXml(){
 
 
 
-
-![标头.jpg](https://cdn.nlark.com/yuque/0/2023/jpeg/21376908/1692002570088-3338946f-42b3-4174-8910-7e749c31e950.jpeg#averageHue=%23f9f8f8&clientId=uc5a67c34-8a0d-4&from=paste&height=78&id=GkDqr&originHeight=78&originWidth=1400&originalType=binary&ratio=1&rotation=0&showTitle=false&size=23158&status=done&style=shadow&taskId=u98709943-fd0b-4e51-821c-a3fc0aef219&title=&width=1400)

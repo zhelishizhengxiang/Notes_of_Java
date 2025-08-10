@@ -333,6 +333,8 @@ Spring为什么可以解决set + singleton模式下循环依赖？
 
 再分析下面的源码：
 ![image.png](https://cdn.nlark.com/yuque/0/2022/png/21376908/1665460240687-3d0794c4-e6ed-4653-9463-767a7f943ff9.png#averageHue=%23fcf7f5&clientId=ue12e8566-378b-4&from=paste&height=934&id=u20f86432&originHeight=934&originWidth=1195&originalType=binary&ratio=1&rotation=0&showTitle=false&size=166762&status=done&style=shadow&taskId=u385636c1-8cf1-4a02-89d3-653f2316c5a&title=&width=1195)
+
 * 从源码中可以看到，spring会先从一级缓存中获取Bean，如果获取不到，则从二级缓存中获取Bean，如果二级缓存还是获取不到，则从三级缓存中获取之前曝光的ObjectFactory对象，通过ObjectFactory对象获取Bean实例，这样就解决了循环依赖的问题。
+
 **总结：**  
 **Spring只能解决setter方法注入的单例bean之间的循环依赖。ClassA依赖ClassB，ClassB又依赖ClassA，形成依赖闭环。Spring在创建ClassA对象后，不需要等给属性赋值，直接将其曝光到bean缓存当中。在解析ClassA的属性时，又发现依赖于ClassB，再次去获取ClassB，当解析ClassB的属性时，又发现需要ClassA的属性，但此时的ClassA已经被提前曝光加入了正在创建的bean的缓存中，则无需创建新的的ClassA的实例，直接从缓存中获取即可。从而解决循环依赖问题。**

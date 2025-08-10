@@ -23,7 +23,8 @@ Bean生命周期可以粗略的划分为五大步：
 
 ![image.png](https://cdn.nlark.com/yuque/0/2022/png/21376908/1665388735200-444405f6-283d-4b3a-8cdf-8c3e01743618.png#averageHue=%23f6f6f6&clientId=ue2397093-2e4b-4&from=paste&height=142&id=u7c6b9a1a&originHeight=142&originWidth=851&originalType=binary&ratio=1&rotation=0&showTitle=false&size=11129&status=done&style=shadow&taskId=u288cbb6f-b738-43ff-ac53-6eb841c29fc&title=&width=851)
 
-编写测试程序：
+编写测试程序：   
+
 定义一个Bean
 ```java
 package com.powernode.spring6.bean;
