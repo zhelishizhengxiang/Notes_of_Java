@@ -1,6 +1,6 @@
 
 
-# Spring Boot中如何进行AOP的开发
+# 
 ## Spring Boot AOP概述
 面向切面编程AOP在Spring教程中已经进行了详细讲解，这里不再赘述，如果忘记的同学，可以重新听一下Spring教程中AOP相关的内容。这里仅带着大家在Spring Boot中实现AOP编程。
 

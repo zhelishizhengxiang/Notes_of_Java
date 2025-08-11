@@ -11,8 +11,7 @@
 
 ![](https://cdn.nlark.com/yuque/0/2024/png/21376908/1729563192417-c03008ef-81f9-4741-ad09-42d49a4b2cc9.png)
 * **可以看出这个注解属于`组合注解`。拥有`@SpringBootConfiguration`、`@EnableAutoConfiguration`、`@ComponentScan`的功能。**
-*
-	![](assets/03Spring%20Boot核心注解和单元测试/file-20250810212457316.png)
+	
 
 
 ## 2.@SpringBootConfiguration注解
@@ -56,7 +55,7 @@ public class Sb305CoreApplication {
 
 * **该注解表示`启用自动配置`。也就是说默认情况下，springboot应用都会默认启用自动配置**
 * **Spring Boot 会根据你引入的依赖自动为你配置好一系列的 Bean，无需手动编写复杂的配置代码。**
-* **自动配置：只要启动，springboot应用会去类路径当中查找class，根据类路径当中有某个类，或某些类，来自动管理bean，不需要我们程序员手动配置**
+* **自动配置：只要启动，springboot应用会去类路径当中查找class，根据类路径当中有某个类，或引入了某些启动器（依赖），来自动管理bean，不需要我们程序员手动配置**
 
 例如：如果你在SpringBoot项目的applicaiton.properties中进行了如下配置：
 

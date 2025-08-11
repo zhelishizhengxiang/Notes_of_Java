@@ -144,7 +144,7 @@ public class MyAspect {
     <aop:aspectj-autoproxy proxy-target-class="true"/>
 </beans>
 ```
-* **<aop:aspectj-autoproxy  proxy-target-class="true"/> 表示开启自动代理。spring容器在扫描类的时候，扫描到带有`@Aspect` 的类时，会将其识别为切面类。并解析其中的切点表达式。对匹配切点的目标对象，Spring 会为目标对象创建代理对象，并将切面的通知逻辑织入目标方法的执行流程**。
+* **<aop:aspectj-autoproxy  proxy-target-class="true"/> 表示开启自动代理。spring容器在扫描类的时候，扫描到带有`@Aspect` 的类时，会将其识别为切面类。并解析其中的切点表达式。对匹配切点的目标对象，Spring 会为目标对象创建代理对象，并将切面的通知逻辑织入目标方法的执行流程**。  
 * **proxy-target-class="true" 表示强制使用CGLIB动态代理。
 * **proxy-target-class="false" 是默认值。表示采用jdk动态代理。即使写成false，当没有接口的时候，也会自动选择cglib生成代理类。**
 

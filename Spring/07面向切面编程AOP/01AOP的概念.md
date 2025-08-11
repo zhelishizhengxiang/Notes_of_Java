@@ -67,7 +67,7 @@ public class UserService{
 - **切面 Aspect**
    - **切点 + 通知就是切面。**
 - **织入 Weaving**
-   - 把**通知应用到目标对象上的过程**。
+   - **通知应用到目标对象上的过程。**
 - 代理对象 Proxy
    - 一个目标对象被织入通知后产生的新对象。
 - 目标对象 Target
@@ -110,7 +110,7 @@ execution([访问控制权限修饰符] 返回值类型 [全限定类名].方法
 	- 可选项。
 	- **省略时表示任意异常类型**。
 
-理解以下的切点表达式：
+理解以下的切点表达式：    
 ```java
 //通知切入的方法为：公开的、返回值类型任意的、com.powernode.mall.service包下所有的类以及该包下子包的所有类、以delete开始的、参数随意的方法
 execution(public * com.powernode.mall.service.*.delete*(..))
