@@ -1,10 +1,6 @@
 
-
-# 
-## Spring Boot AOP概述
-面向切面编程AOP在Spring教程中已经进行了详细讲解，这里不再赘述，如果忘记的同学，可以重新听一下Spring教程中AOP相关的内容。这里仅带着大家在Spring Boot中实现AOP编程。
-
-Spring Boot的AOP编程和Spring框架中AOP编程的唯一区别是：引入依赖的方式不同。其他内容完全一样。Spring Boot中AOP编程需要引入aop启动器：
+## 1.Spring Boot AOP概述
+**Spring Boot的AOP编程和Spring框架中AOP编程的唯一区别是：引入依赖的方式不同。其他内容完全一样。Spring Boot中AOP编程需要引入aop启动器：**
 
 ```xml
 <!--aop启动器-->
@@ -17,15 +13,13 @@ Spring Boot的AOP编程和Spring框架中AOP编程的唯一区别是：引入依
 ![](https://cdn.nlark.com/yuque/0/2024/png/21376908/1729734178510-707a3d64-caf6-407d-ba2b-9633f218c0ed.png)
 
 可以看到，当引入`aop启动器`之后，会引入`aop依赖`和`aspectj依赖`。
-
 + aop依赖：如果只有这一个依赖，也可以实现AOP编程，这种方式表示使用了纯Spring AOP实现aop编程。
 + aspectj依赖：一个独立的可以完成AOP编程的AOP框架，属于第三方的，不属于Spring框架。（我们通常用它，因为它的功能更加强大）
 
 
 
-![](https://cdn.nlark.com/yuque/0/2024/png/21376908/1730804471502-31c64115-c49a-4d76-92e0-90e9ae543b32.png)
 
-## Spring Boot AOP实现
+## 2.Spring Boot AOP实现
 实现功能：项目中很多service，要求执行`任何service中的任何方法之前`记录日志。
 
 ### 创建Spring Boot项目引入aop启动器
@@ -78,9 +72,6 @@ public class OrderServiceImpl implements OrderService {
 ```
 
 
-
-![](https://cdn.nlark.com/yuque/0/2024/png/21376908/1730804471502-31c64115-c49a-4d76-92e0-90e9ae543b32.png)
-
 ### 编写切面
 ```java
 package com.powernode.aop;
@@ -131,7 +122,6 @@ public class LogAspect {
 
 
 
-![](https://cdn.nlark.com/yuque/0/2024/png/21376908/1730804471502-31c64115-c49a-4d76-92e0-90e9ae543b32.png)
 
 ### 测试
 ```java
@@ -164,5 +154,4 @@ class Sb308AopApplicationTests {
 
 
 
-![](https://cdn.nlark.com/yuque/0/2024/png/21376908/1730804471502-31c64115-c49a-4d76-92e0-90e9ae543b32.png)
 

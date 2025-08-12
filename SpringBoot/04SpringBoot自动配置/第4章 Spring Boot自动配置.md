@@ -1,0 +1,155 @@
+
+
+# 
+# 自动配置实现原理
+我们来深入的分析一个问题：为什么导入`web启动器`，web开发相关的自动配置就会生效？
+
+## 在程序没有开始执行之前都导入了哪些依赖
+在程序没有开始运行之前，我们先来分析一下，当导入`web启动器`之后，底层都一连串的导入了哪些依赖！
+
+1. 从这里开始：导入了`spring-boot-starter-web`【web启动器】
+2. 然后关联导入了`spring-boot-starter`、`spring-boot-starter-json`、`spring-boot-starter-tomcat`、`spring-web`、`spring-webmvc`
+    1. 注意：`spring-boot-starter`是springboot核心启动器，任何启动器在导入时，都会关联导入springboot核心启动器。
+3. 核心启动器导入之后，关联导入了一个jar包：`spring-boot-autoconfigure`。
+    1. 注意：这个jar包中存放的是springboot框架**<font style="color:#DF2A3F;">官方支持的自动配置类</font>**。如下图：
+
+![](https://cdn.nlark.com/yuque/0/2024/png/21376908/1731120167649-5b43660e-d911-4af1-b609-7ba357483cbb.png)
+
+    2. 官方支持的自动配置类有多少个呢，可以通过下图位置查看：
+
+![](https://cdn.nlark.com/yuque/0/2024/png/21376908/1731120316690-38e92299-860c-4f52-8e90-93773af32190.png)
+
+![](https://cdn.nlark.com/yuque/0/2024/png/21376908/1731120338604-18c536ab-a98f-4ba7-adf3-10f47f02056d.png)
+
+得知`springboot3.3.5`这个版本共`152`个自动配置类。自动配置类的命名规则是`XxxxAutoConfiguration`。
+
+**<font style="color:#DF2A3F;">提示：哪个自动配置类生效，就代表哪个配置文件生效，那么对应的技术就完成了整合，就可以进行对应技术的开发。</font>**
+
+![](https://cdn.nlark.com/yuque/0/2024/png/21376908/1730804471502-31c64115-c49a-4d76-92e0-90e9ae543b32.png)
+
+## 从main方法开始执行之后都发生了什么
+以上分析的是在项目结构上已经完成了相关依赖的导入，这些自动配置了导入到了项目当中，那么在运行时哪些自动配置类会被加载？哪些自动配置类会生效呢？我们接下来进行程序运行阶段的分析：
+
+1. 程序从main方法进入执行，主入口类上使用`@SpringBootApplication`进行了标注。
+2. `@SpringBootApplication`注解是复合注解，代表以下三个注解的功能：
+    1. `@SpringBootConfiguration`：它被`@Configuration`标注，说明主入口类就是一个配置类，此时该配置开始加载。
+    2. `@ComponentScan`：默认扫描的是主入口所在包以及子包。因此`spring-boot-autoconfigure`包是扫描不到的，按说`XxxAutoConfiguration`自动配置类是无法加载的！！！那么这些自动配置类又是如何加载和生效的呢？
+    3. `@EnableAutoConfiguration`：自动配置类的加载和生效全靠它了。该注解被翻译为：启用自动配置。
+3. `@EnableAutoConfiguration`被`@Import(AutoConfigurationImportSelector.class)`标注
+    1. `@Import(AutoConfigurationImportSelector.class)`的作用是：将`AutoConfigurationImportSelector`作为一个Bean加载到IoC容器中。
+    2. 这个Bean的作用是：负责收集和选择所有符合条件的自动配置类。
+4. 添加断点，跟踪`AutoConfigurationImportSelector`源码：
+
+![](https://cdn.nlark.com/yuque/0/2024/png/21376908/1731122737109-c55ed97e-dc4a-483b-8f51-728d5c8d1447.png)
+
+通过跟踪得知，这`152`个自动配置类的**类名**都会被加载到IoC容器中。**<font style="color:#DF2A3F;">注意：加载了152，并不是152个全部生效</font>**。
+
+![](https://cdn.nlark.com/yuque/0/2024/png/21376908/1730804471502-31c64115-c49a-4d76-92e0-90e9ae543b32.png)
+
+5. 这`152`个自动配置类底层是怎么查找的？
+
+![](https://cdn.nlark.com/yuque/0/2024/png/21376908/1731123323733-0401785b-730f-4cfa-b581-a7100171a4f1.png)
+
+![](https://cdn.nlark.com/yuque/0/2024/png/21376908/1731123359457-fe66423f-041f-4ecf-81f8-216e485c75ad.png)
+
+![](https://cdn.nlark.com/yuque/0/2024/png/21376908/1730804471502-31c64115-c49a-4d76-92e0-90e9ae543b32.png)
+
+![](https://cdn.nlark.com/yuque/0/2024/png/21376908/1731123384562-d409b284-62ba-4519-9dba-34a40910dd47.png)
+
+![](https://cdn.nlark.com/yuque/0/2024/png/21376908/1731123403161-a0dfcbcd-fdf8-4051-8ac0-d5f9cf696095.png)
+
+通过以上源码跟踪，得知，是从下图位置加载的：
+
+![](https://cdn.nlark.com/yuque/0/2024/png/21376908/1731120316690-38e92299-860c-4f52-8e90-93773af32190.png)
+
+![](https://cdn.nlark.com/yuque/0/2024/png/21376908/1730804471502-31c64115-c49a-4d76-92e0-90e9ae543b32.png)
+
+6. 最终哪些自动配置类生效了？
+
+![](https://cdn.nlark.com/yuque/0/2024/png/21376908/1731122983126-29db71a3-9150-4d01-9be9-719eca312ac3.png)
+
+最先获取到`152`个，经过上图的一层一层的过滤（**条件注解**），**<font style="color:#DF2A3F;">最终筛选了</font>**`**<font style="color:#DF2A3F;">26</font>**`**<font style="color:#DF2A3F;">个自动配置类，为什么这么少，因为你只引入了</font>**`**<font style="color:#DF2A3F;">web starter</font>**`**<font style="color:#DF2A3F;">。这26个配置就是做web开发需要的最少配置</font>**。
+
+![](https://cdn.nlark.com/yuque/0/2024/png/21376908/1730804471502-31c64115-c49a-4d76-92e0-90e9ae543b32.png)
+
+**具体怎么排除的，请看以下解释：**
+
++ configurations = removeDuplicates(configurations);
+
+去重：移除 configurations 列表中的重复项，确保每个配置类只出现一次。
+
++ Set<String> exclusions = getExclusions(annotationMetadata, attributes);
+
+获取排除列表：从注解元数据和属性中获取需要排除的配置类名称集合。因为`@EnableAutoConfiguration`注解还能这么用：`@EnableAutoConfiguration(exclude = {排除列表}, excludeName = {排除列表})`
+
++ checkExcludedClasses(configurations, exclusions);
+
+检查排除：验证 configurations 中是否有被排除的类，如果有，可能会抛出异常或记录警告。
+
++ configurations.removeAll(exclusions);
+
+移除排除项：从 configurations 列表中移除所有在 exclusions 集合中的配置类。
+
++ configurations = getConfigurationClassFilter().filter(configurations);
+
+过滤配置类：使用 ConfigurationClassFilter 对 configurations 进行进一步过滤。**这一行通过条件注解进行判断**，例如 @ConditionalOnClass、@ConditionalOnMissingBean 等。
+
++ fireAutoConfigurationImportEvents(configurations, exclusions);
+
+触发事件：触发自动配置导入事件，通知其他组件或监听器关于最终确定的配置类和排除的类。
+
+![](https://cdn.nlark.com/yuque/0/2024/png/21376908/1730804471502-31c64115-c49a-4d76-92e0-90e9ae543b32.png)
+
+## 自动配置类都干了啥
+**<font style="color:#DF2A3F;">自动配置类导入了一堆相关的组件（一个组件一个功能），而每个组件获取配置时都是从属性类中获取，而属性类恰好又和配置文件绑定。</font>**
+
+以`DispatcherServletAutoConfiguration`自动配置类为例，这个自动配置类主要是配置了SpringMVC中的前端控制器。
+
+请看源码：
+
+![](https://cdn.nlark.com/yuque/0/2024/png/21376908/1731133277010-5db32db6-3577-48c2-8238-4f845b273a46.png)
+
+![](https://cdn.nlark.com/yuque/0/2024/png/21376908/1730804471502-31c64115-c49a-4d76-92e0-90e9ae543b32.png)
+
+通过以上源码得知，`DispatcherServletConfiguration`组件的配置信息来源于`WebMvcProperties`属性类。`WebMvcProperties`类源码如下：
+
+![](https://cdn.nlark.com/yuque/0/2024/png/21376908/1731133562874-9017d21b-32e6-488d-a4c8-6726fa7b0a89.png)
+
+通过以上源码又得知，要对`DispatcherServletConfiguration`进行配置的话，应该在`application.properties`中使用这样的前缀配置：`spring.mvc....`
+
+![](https://cdn.nlark.com/yuque/0/2024/png/21376908/1730804471502-31c64115-c49a-4d76-92e0-90e9ae543b32.png)
+
+再来看`嵌入式Web服务器工厂自定义程序自动配置`：`EmbeddedWebServerFactoryCustomizerAutoConfiguration`，通俗讲：通过它可以配置web服务器。
+
+请看源码：
+
+![](https://cdn.nlark.com/yuque/0/2024/png/21376908/1731134006487-d1331ac9-1145-4d52-aed3-e9b60cdc810e.png)
+
+![](https://cdn.nlark.com/yuque/0/2024/png/21376908/1730804471502-31c64115-c49a-4d76-92e0-90e9ae543b32.png)
+
+通过以上源码得知，这个自动配置类中也有很多组件，有tomcat组件，有jetty组件。单独看Tomcat，要配置Tomcat服务器，需要参照`ServerProperties`属性类，打开源码看看：
+
+![](https://cdn.nlark.com/yuque/0/2024/png/21376908/1731134070889-7a8b5378-c3bf-4b3f-8fb4-0b70a37e4938.png)
+
+因此配置Tomcat服务器需要在`application.properties`文件中使用这样的前缀配置：`server.`
+
+![](https://cdn.nlark.com/yuque/0/2024/png/21376908/1730804471502-31c64115-c49a-4d76-92e0-90e9ae543b32.png)
+
+## 总结自动配置原理
+1. 运行环境准备阶段
+    1. 引入web启动器
+    2. 最终传递引入了自动配置的jar包
+    3. 自动配置的jar包中有152个自动配置类，到此运行环境准备完毕。
+2. 运行阶段
+    1. @EnableAutoConfiguration 启用自动配置，将152个自动配置类全部加载到IoC容器中，然后根据开发场景筛选出必须的自动配置类。
+    2. 自动配置类加载了一堆组件。
+    3. 每个组件需要的数据来自属性类。
+    4. 属性类又和配置文件绑定在一起。
+3. 因此，最终一句话：导入启动器，修改配置文件，就可以完成对应功能的开发。
+
+![](https://cdn.nlark.com/yuque/0/2024/png/21376908/1730804471502-31c64115-c49a-4d76-92e0-90e9ae543b32.png)
+
+
+
+
+

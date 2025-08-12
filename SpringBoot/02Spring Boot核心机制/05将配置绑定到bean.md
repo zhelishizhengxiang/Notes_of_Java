@@ -79,7 +79,7 @@ public class AppBean {
 
 
 ### 2.@Configuration注解
-* **以上操中使用了`@Component注解`进行了标注，来纳入IoC容器的管理。也可以使用另外一个注解`@Configuration`，用这个注解将Bean标注为配置类。该注解标注的类也会被纳入IOC管理**
+* **以上操作中使用了`@Component注解`进行了标注，来纳入IoC容器的管理。也可以使用另外一个注解`@Configuration`，用这个注解将Bean标注为配置类。该注解标注的类也会被纳入IOC管理**
 * **多数情况下我们会选择使用这个注解，因为该Bean对象的属性对应的就是配置文件中的配置信息，因此这个Bean我们也可以将其看做是一个配置类。**
 
 ```java
@@ -405,16 +405,38 @@ class Vip {
 }
 ```
 
+配置信息如下：application.properties
+```properties
+app2.abc.names[0]=jack  
+app2.abc.names[1]=lucy  
+#数组的配置
+app2.abc.addrArray[0].city=BeiJing  
+app2.abc.addrArray[0].street=ChaoYang  
+app2.abc.addrArray[1].city=TianJin  
+app2.abc.addrArray[1].street=NanKai  
 
+  #list的配置
+app2.abc.addrList[0].city=BeiJing_List  
+app2.abc.addrList[0].street=ChaoYang_List  
+app2.abc.addrList[1].city=TianJin_List  
+app2.abc.addrList[1].street=NanKai_List  
+
+# 这是map个配置，key是addr1和addr2
+app2.abc.addrs.addr1.city=BeiJing_Map  
+app2.abc.addrs.addr1.street=ChaoYang_Map  
+app2.abc.addrs.addr2.city=TianJin_Map  
+app2.abc.addrs.addr2.street=NanKai_Map
+```
 
 配置信息如下：`application.yml`
-
 ```yaml
 #数组
 names:
   - jackson
   - lucy
   - lili
+# 或者
+names: [jack, lucy]
 
 #List集合
 products: 
@@ -425,17 +447,20 @@ products:
 
 #Map集合
 vips:
+  #这是key，在缩进一次就是value
   vip1:
     name: 张三
     age: 20
   vip2:
     name: 李四
     age: 22
+
+#注意在yml中遇到驼峰命名可以改成下面的配置，这样用的最多
+#    addrArray:  
+    addr-array:
 ```
 
-
-
-提醒：记得入口程序使用<font style="color:#080808;background-color:#ffffff;">@ConfigurationPropertiesScan(basePackages = "com.powernode.sb307externalconfig.bean")进行标注。</font>
+提醒：记得入口程序使用@ConfigurationPropertiesScan(basePackages = "com.powernode.sb307externalconfig.bean")进行标注。
 
 <font style="color:#080808;background-color:#ffffff;"></font>
 
@@ -445,15 +470,13 @@ vips:
 
 
 
-![](https://cdn.nlark.com/yuque/0/2024/png/21376908/1730804471502-31c64115-c49a-4d76-92e0-90e9ae543b32.png)
 
-### 将配置绑定到第三方对象
-将配置文件中的信息绑定到某个Bean对象上，如果这个Bean对象没有源码，是第三方库提供的，怎么办？
 
-此时可以单独编写一个方法，在方法上使用以下两个注解进行标注：
-
-+ **@Bean**
-+ **@ConfigurationProperties**
+### 6.将配置绑定到第三方对象
+* **将配置文件中的信息绑定到某个Bean对象上，如果这个Bean对象没有源码**，是第三方库提供的，怎么办？
+* **此时可以单独编写一个方法，在方法上使用以下两个注解进行标注**：
+	+ **@Bean：用于在配置类中声明这是一个Bean，将来要纳入ioc容器管理**
+	+ **@ConfigurationProperties：用于去注入属性，值为配置文件中的值**
 
 假设我们有这样一个类`Address`，代码如下：
 
@@ -512,8 +535,6 @@ address:
 
 
 
-![](https://cdn.nlark.com/yuque/0/2024/png/21376908/1730804471502-31c64115-c49a-4d76-92e0-90e9ae543b32.png)
-
 实现代码如下：
 
 ```java
@@ -533,10 +554,8 @@ public class ApplicationConfig {
 
 
 
-![](https://cdn.nlark.com/yuque/0/2024/png/21376908/1730804471502-31c64115-c49a-4d76-92e0-90e9ae543b32.png)
-
-### 指定数据来源
-之前所讲的内容是将Spring Boot框架默认的配置文件`application.properties`或`application.yml`作为数据的来源绑定到Bean上。如果配置信息没有在默认的配置文件中呢？可以使用@PropertySource注解指定配置文件的位置，这个配置文件可以是`.properties`，也可以是`.xml`。这里重点掌握`.properties`即可。
+### 7.指定数据来源
+之前所讲的内容是将Spring Boot框架默认的配置文件`application.properties`或`application.yml`作为数据的来源绑定到Bean上。**如果配置信息没有在默认的配置文件中呢？可以使用@PropertySource注解指定配置文件的位置，这个配置文件可以是`.properties`，也可以是`.xml`。这里重点掌握`.properties`即可。**
 
 在`resources`目录下新建`a`目录，在`a`目录下新建`b`目录，`b`目录中新建`group-info.properties`文件，进行如下的配置：
 
@@ -601,9 +620,9 @@ public class Group {
 
 以下三个注解分别起到什么作用：
 
-+ @Configuration：指定该类为配置类，纳入Spring容器的管理
-+ @ConfigurationProperties(prefix = "group")：将配置文件中的值赋值给Bean对象的属性
-+ @PropertySource("classpath:a/b/group-info.properties")：指定额外的配置文件
++ **@Configuration：指定该类为配置类，纳入Spring容器的管理**
++ **@ConfigurationProperties(prefix = "group")：将配置文件中的值赋值给Bean对象的属性**
++ **@PropertySource("classpath:a/b/group-info.properties")：指定额外的配置文件**
 
 
 
@@ -612,5 +631,144 @@ public class Group {
 ![](https://cdn.nlark.com/yuque/0/2024/png/21376908/1729681829431-7e25af75-4618-410a-a5c7-d377c53683d9.png)
 
 
+### 8.@ImportResource注解（了解）
+创建Bean的三种方式总结：
++ 第一种方式：编写applicationContext.xml文件，在该文件中注册Bean，Spring容器启动时实例化配置文件中的Bean对象。
++ **第二种方式：@Configuration注解结合@Bean注解**。
++ **第三种方式：@Component、@Service、@Controller、@Repository等注解**。
 
-![](https://cdn.nlark.com/yuque/0/2024/png/21376908/1730804471502-31c64115-c49a-4d76-92e0-90e9ae543b32.png)
+第二种和第三种我们都已经知道了。针对第一种方式，如果在SpringBoot框架中应该怎么实现呢？使用@ImportResource注解实现
+
+
+定义一个普通的Java类：Person
+
+```java
+package com.powernode.sb307externalconfig.bean;
+
+public class Person {
+    private String name;
+    private String age;
+
+    @Override
+    public String toString() {
+        return "Person{" +
+                "name='" + name + '\'' +
+                ", age='" + age + '\'' +
+                '}';
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getAge() {
+        return age;
+    }
+
+    public void setAge(String age) {
+        this.age = age;
+    }
+}
+
+```
+
+
+
+在`resources`目录下新建`applicationContext.xml`配置文件：
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+    <bean id="person" class="com.powernode.sb307externalconfig.bean.Person">
+        <property name="name" value="jackson"/>
+        <property name="age" value="20"/>
+    </bean>
+</beans>
+```
+
+
+
+在SpringBoot主入口类上添加@ImportResource进行资源导入，这样`applicationContext.xml`文件中的Bean将会纳入IoC容器的管理：
+
+```java
+@ImportResource("classpath:applicationContext.xml")
+public class Sb307ExternalConfigApplication {}
+```
+
+
+
+编写测试程序，看看是否可以获取到`person`这个bean对象：
+
+```java
+@SpringBootTest
+class Sb307ExternalConfigApplicationTests {
+    @Autowired
+    private Person person;
+    @Test
+    void test09(){
+        System.out.println(person);
+    }
+}
+```
+
+执行结果如下：
+
+![](https://cdn.nlark.com/yuque/0/2024/png/21376908/1729683600179-80efe94a-9aca-4959-a6ee-af938bb4fc61.png)
+
+
+因此，**项目中如果有类似于Spring的这种xml配置文件，要想纳入IoC容器管理，需要在入口类上使用`@ImportResource("classpath:applicationContext.xml")`注解即可**。
+
+
+
+
+
+
+
+## 9.Environment
+* **SpringBoot框架在启动的时候会将系统配置，环境信息全部封装到对象中，如果要获取这些环境信息，可以调用Environment接口（Envirobnment对象）的方法。**
+* 在Spring Boot中，`Environment`接口提供了访问应用程序环境信息的方法，比如活动配置文件、系统环境变量、命令行参数等。`Environment`接口由Spring框架提供，Spring Boot应用程序通常会使用Spring提供的实现类`AbstractEnvironment`及其子类来实现具体的环境功能。
+* `Environment`对象封装的主要数据包括：
+	1. **Active Profiles: 当前激活的配置文件列表**。Spring Boot允许应用程序定义不同的环境配置文件（如开发环境、测试环境和生产环境），通过激活不同的配置文件来改变应用程序的行为。
+	2. **System Properties: 系统属性**，通常是操作系统级别的属性，比如操作系统名称、Java版本等。
+	3. **System Environment Variables: 系统环境变量**，这些变量通常是由操作系统提供的，可以在启动应用程序时设置特定的值。
+	4. **Command Line Arguments：应用程序启动时传递给主方法的命令行参数**。
+	5. **Property Sources: `Environment`还包含了一个`PropertySource`列表，这个列表包含了从不同来源加载的所有属性**。`PropertySource`可以来自多种地方，比如配置文件、系统属性、环境变量等。
+
+在Spring Boot中，可以通过注入`Environment`来获取上述信息。例如：
+```java
+package com.powernode.springboot.bean;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
+import org.springframework.stereotype.Component;
+
+@Component
+public class SomeBean {
+
+    @Autowired
+    private Environment environment;
+
+    public void doSome(){
+        // 直接使用这个环境对象，来获取环境信息，配置信息等。
+        String[] activeProfiles = environment.getActiveProfiles();
+        for (String activeProfile : activeProfiles) {
+            System.out.println(activeProfile);
+        }
+
+        // 获取配置信息
+        String street = environment.getProperty("app.xyz.addr.street");
+        System.out.println(street);
+    }
+}
+
+```
+
+通过这种方式，你可以根据环境的不同灵活地配置你的应用程序。`Environment`是一个非常有用的工具，它可以帮助你管理各种类型的配置信息，并根据不同的运行时条件做出相应的调整。
+
+
