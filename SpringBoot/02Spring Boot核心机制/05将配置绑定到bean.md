@@ -455,7 +455,7 @@ vips:
     name: 李四
     age: 22
 
-#注意在yml中遇到驼峰命名可以改成下面的配置，这样用的最多
+#注意在yml和properties中遇到驼峰命名可以改成下面的配置，这样用的最多
 #    addrArray:  
     addr-array:
 ```

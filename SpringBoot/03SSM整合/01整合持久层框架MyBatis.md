@@ -223,7 +223,7 @@ public interface VipMapper {
 
 ![](https://cdn.nlark.com/yuque/0/2024/png/21376908/1729132285817-67182b8c-487e-4ef5-b061-da4b12174489.png)
 
-![](https://cdn.nlark.com/yuque/0/2024/png/21376908/1730804471502-31c64115-c49a-4d76-92e0-90e9ae543b32.png)
+
 
 然后在`VipMapper`接口上：alt+enter
 
@@ -236,8 +236,6 @@ public interface VipMapper {
 ![](https://cdn.nlark.com/yuque/0/2024/png/21376908/1729132546447-714f679f-9b8c-4482-9e8d-d1c7e525a3c5.png)
 
 ![](https://cdn.nlark.com/yuque/0/2024/png/21376908/1729132560250-b0ee37ad-8954-4b5d-925e-cc0cb5e14040.png)
-
-![](https://cdn.nlark.com/yuque/0/2024/png/21376908/1730804471502-31c64115-c49a-4d76-92e0-90e9ae543b32.png)
 
 接下来，你会看到Mapper接口中方法报错了，可以在错误的位置上使用`alt+enter`，选择`Generate statement`：
 
@@ -271,7 +269,7 @@ public interface VipMapper {
 </mapper>
 ```
 
-![](https://cdn.nlark.com/yuque/0/2024/png/21376908/1730804471502-31c64115-c49a-4d76-92e0-90e9ae543b32.png)
+
 
 ## 7.添加Mapper的扫描
 **在Spring Boot的入口程序上添加如下的注解，来完成`VipMapper`接口的扫描：**

@@ -403,7 +403,7 @@ spring.thymeleaf.suffix=.html
 
 
 
-**这些配置最终都会通过`@ConfigurationProperties(prefix="")`注解绑定到对应的bean的属性上。这个Bean我们一般称为`属性类`**。  
+**这些配置最终都会通过`@ConfigurationProperties(prefix="")`注解绑定到对应的bean的属性上。这个Bean我们一般称为`属性类`**。    
 ![](assets/01Spring%20Boot自动配置概述/file-20250812193643096.png)
 
 例如：
@@ -428,8 +428,9 @@ SpringBoot官方文档当中也有指导，告诉你都有哪些`属性类`，�
 
 
 
-## 自动配置是按需加载的
-SpringBoot提供了非常多的自动配置类，有的是`web`相关的自动配置，有的是`mail`相关的自动配置。但是这些自动配置并不是全部生效，它是按需加载的。**<font style="color:#DF2A3F;">导入了哪个启动器，则该启动器对应的自动配置类才会被加载</font>**。
+## 6.自动配置是按需加载的
+* SpringBoot提供了非常多的自动配置类，有的是`web`相关的自动配置，有的是`mail`相关的自动配置。
+* **但是这些自动配置并不是全部生效，它是按需加载的。导入了哪个启动器，则该启动器对应的自动配置类才会被加载**。
 
 这些自动配置类在哪里？
 
@@ -440,16 +441,15 @@ SpringBoot提供了非常多的自动配置类，有的是`web`相关的自动�
 ![](https://cdn.nlark.com/yuque/0/2024/png/21376908/1731059980138-654ed368-bfc2-42f5-afd5-045d2b2c5762.png)
 
 
-## SpringBoot框架提供的条件注解
-如何做到按需加载的，依靠SpringBoot框架中的条件注解来实现的。
+## 7.SpringBoot框架提供的条件注解
 
-Spring Boot框架中的@ConditionalOnXxx系列注解属于条件注解（Conditional Annotations），它们用于基于某些条件来决定是否应该创建一个或一组Bean。这些注解通常用在自动配置类上，以确保只有在特定条件满足时才会应用相应的配置。
+* **如何做到按需加载的，依靠SpringBoot框架中的条件注解来实现的**。
+* **Spring Boot框架中的@ConditionalOnXxx系列注解属于条件注解（Conditional Annotations），它们用于基于某些条件来决定是否应该创建一个或一组Bean。这些注解通常用在自动配置类上，以确保只有在特定条件满足时才会应用相应的配置。**
 
 这里是一些常见的@ConditionalOnXxx注解及其作用：
-
-+ @ConditionalOnClass：当指定的类存在时，才创建Bean。
++ **@ConditionalOnClass**：当指定的类存在时，才创建Bean。
 + @ConditionalOnMissingClass：当指定的类不存在时，才创建Bean。
-+ @ConditionalOnBean：当容器中存在指定的Bean时，才创建Bean。
++ **@ConditionalOnBean**：当容器中存在指定的Bean时，才创建Bean。
 + @ConditionalOnMissingBean：当容器中不存在指定的Bean时，才创建Bean。
 + @ConditionalOnProperty：当配置文件中存在指定的属性时，才创建Bean。也可以设置属性值需要匹配的值。
 + @ConditionalOnResource：当指定的资源存在时，才创建Bean。
@@ -460,7 +460,7 @@ Spring Boot框架中的@ConditionalOnXxx系列注解属于条件注解（Conditi
 
 
 
-假设我们来实现这样一个功能：如果IoC容器当中**<font style="color:#DF2A3F;">存在</font>**`**<font style="color:#DF2A3F;">A</font>**`**<font style="color:#DF2A3F;">Bean</font>**，就创建`B`Bean，代码如下：
+假设我们来实现这样一个功能：如果IoC容器当中存在A Bean，就创建`B`Bean，代码如下：
 
 ```java
 @Configuration
@@ -481,7 +481,7 @@ public class AppConfig {
 
 
 
-如果IoC容器当中**<font style="color:#DF2A3F;">不存在</font>**`**<font style="color:#DF2A3F;">A</font>**`**<font style="color:#DF2A3F;">Bean</font>**，就创建`B`Bean，代码如下：
+如果IoC容器当中**不存在A Bean，就创建`B`Bean，代码如下：
 
 ```java
 @Configuration
@@ -514,5 +514,5 @@ public class MyConfig {
 }
 ```
 
-以上程序自行测试！
+
 
