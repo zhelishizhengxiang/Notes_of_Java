@@ -1,10 +1,8 @@
 
-## web服务器切换为jetty
-springboot默认嵌入的web服务器是Tomcat，如何切换到jetty服务器？
-
-实现方式：排除Tomcat，添加Jetty依赖
-
-**修改 **`pom.xml`** 文件**：在 `pom.xml` 中，确保你使用 `spring-boot-starter-web` 并排除 Tomcat，然后添加 Jetty 依赖。
+## 1.web服务器切换为jetty
+* **springboot默认嵌入的web服务器是Tomcat，如何切换到jetty服务器？
+* **实现方式：排除Tomcat，添加Jetty依赖**
+* **修改 `pom.xml` 文件**：在 `pom.xml` 中，确保你使用 `spring-boot-starter-web` 并排除 Tomcat，然后添加 Jetty 依赖。
 
 ```xml
 <!-- 排除 Tomcat -->
@@ -26,7 +24,7 @@ springboot默认嵌入的web服务器是Tomcat，如何切换到jetty服务器�
 
 ```
 
-## web服务器切换原理
+## 2.web服务器切换原理
 从哪里可以看出springboot是直接将tomcat服务器嵌入到应用中的呢？看这个类：`ServletWebServerFactoryAutoConfiguration`
 
 ![](https://cdn.nlark.com/yuque/0/2024/png/21376908/1731572949358-481582b6-0e79-4f4c-b556-b1ec3c13882c.png)
@@ -35,9 +33,9 @@ springboot默认嵌入的web服务器是Tomcat，如何切换到jetty服务器�
 
 ![](https://cdn.nlark.com/yuque/0/2024/png/21376908/1731573044414-b1cb4767-de21-4897-9d38-36e6382a8581.png)
 
-生效条件是，看类路径当中是否有对应服务器相关的类，如果有则生效。`spring-boot-web-starter`这个web启动器引入的时候，大家都知道，它间接引入的是tomcat服务器的jar包。因此默认Tomcat服务器被嵌入。如果想要切换web服务器，将tomcat相关jar包排除掉，引入jetty的jar包之后，jetty服务器就会生效，这就是切换web服务器的原理。
+* **生效条件是，看类路径当中是否有对应服务器相关的类，如果有则生效**。`spring-boot-web-starter`这个web启动器引入的时候，大家都知道，它间接引入的是tomcat服务器的jar包。因此默认Tomcat服务器被嵌入。如果想要切换web服务器，将tomcat相关jar包排除掉，引入jetty的jar包之后，jetty服务器就会生效，这就是切换web服务器的原理。
 
-## web服务器优化
+## 3.web服务器优化
 通过以下源码得知，web服务器的相关配置和`ServerProperties`有关系：
 
 ![](https://cdn.nlark.com/yuque/0/2024/png/21376908/1731573299936-414ae5c8-87a8-4810-b448-ac1b67f3cfb2.png)
@@ -56,9 +54,8 @@ springboot默认嵌入的web服务器是Tomcat，如何切换到jetty服务器�
 
 ![](https://cdn.nlark.com/yuque/0/2024/png/21376908/1731573452454-a150e6b1-6fa0-411c-b2a5-063f5b03be6b.png)
 
-通过以上源码得知，如果要对tomcat服务器进行配置，前缀为：`server.tomcat`
-
-如果要对jetty服务器进行配置，前缀为：`server.jetty`。
+* **通过以上源码得知，如果要对tomcat服务器进行配置，前缀为：`server.tomcat`**
+* **如果要对jetty服务器进行配置，前缀为：`server.jetty`**。
 
 
 

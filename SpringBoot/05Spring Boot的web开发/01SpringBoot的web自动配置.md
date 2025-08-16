@@ -475,7 +475,6 @@ WebJars官网：[https://www.webjars.org/](https://www.webjars.org/)
 
 
 
-![](https://cdn.nlark.com/yuque/0/2024/png/21376908/1730804471502-31c64115-c49a-4d76-92e0-90e9ae543b32.png)
 
 ### ③关于普通静态资源处理
 SpringBoot对普通静态资源处理的规则是：

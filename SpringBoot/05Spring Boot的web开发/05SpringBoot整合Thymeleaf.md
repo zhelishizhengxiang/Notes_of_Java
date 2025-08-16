@@ -1,22 +1,22 @@
 
-## 传统web应用和前后端分离
+## 一、传统web应用和前后端分离
 如果你是做前后端分离的项目，这一章节的内容将用不上。
 
-现代开发大部分应用都会采用前后端分离的方式进行开发，前端是一个独立的系统，后端也是一个独立的系统，后端系统只给前端系统提供数据（JSON数据），不需要后端解析模板页面，前端系统拿到后端提供的数据之后，前端负责填充数据即可。因此这一章节内容作为了解。
+**现代开发大部分应用都会采用前后端分离的方式进行开发，前端是一个独立的系统，后端也是一个独立的系统，后端系统只给前端系统提供数据（JSON数据）**，不需要后端解析模板页面，前端系统拿到后端提供的数据之后，前端负责填充数据即可。因此这一章节内容作为了解。
 
 
 
-传统的WEB应用（非前后端分离）：浏览器页面上展示成什么效果，后端服务器说了算，这是传统web应用最大的特点。
+传统的WEB应用（非前后端分离）：**浏览器页面上展示成什么效果，后端服务器说了算，这是传统web应用最大的特点。**
 
 ![](https://cdn.nlark.com/yuque/0/2024/png/21376908/1730789733440-1dc2d749-19c5-4363-b35d-bf6e6008265c.png)
 
-![](https://cdn.nlark.com/yuque/0/2024/png/21376908/1730804471502-31c64115-c49a-4d76-92e0-90e9ae543b32.png)
 
-前后端分离的应用：前端是一个独立的系统，后端也是一个独立的系统，后端系统不再负责页面的渲染，后端系统只负责给前端系统提供开放的API接口，后端系统只负责数据的收集，然后将数据以JSON/XML等格式响应给前端系统。前端系统拿到接口返回的数据后，将数据填充到页面上。
+
+**前后端分离的应用：前端是一个独立的系统，后端也是一个独立的系统，后端系统不再负责页面的渲染，后端系统只负责给前端系统提供开放的API接口，后端系统只负责数据的收集，然后将数据以JSON/XML等格式响应给前端系统。前端系统拿到接口返回的数据后，将数据填充到页面上。**
 
 ![](https://cdn.nlark.com/yuque/0/2024/png/21376908/1730790760614-212e3911-eb37-4dca-88a4-eca6ecd26dba.png)
 
-![](https://cdn.nlark.com/yuque/0/2024/png/21376908/1730804471502-31c64115-c49a-4d76-92e0-90e9ae543b32.png)
+
 
 前后端分离的好处：
 
@@ -30,22 +30,22 @@
 
 
 
-## SpringBoot整合Thymeleaf
+## 二、SpringBoot整合Thymeleaf
 Java的模板技术有很多，SpringBoot支持以下的模板技术：
 
 1. **Thymeleaf**：
     - **特点**：Thymeleaf 是一个现代的服务器端Java模板引擎，它支持HTML5，XML，TEXT，JAVASCRIPT，CSS等多种模板类型。它能够在浏览器中预览，这使得前端开发更加便捷。Thymeleaf 提供了一套强大的表达式语言，可以轻松地处理数据绑定、条件判断、循环等。
     - **优势**：**<font style="color:#DF2A3F;">与Spring框架集成良好，也是SpringBoot官方推荐的</font>**。
-2. **FreeMarker**：
+2. FreeMarker：
     - **特点**：FreeMarker 是一个用Java编写的模板引擎，主要用来生成文本输出，如HTML网页、邮件、配置文件等。它不依赖于Servlet容器，可以在任何环境中运行。
     - **优势**：模板语法丰富，灵活性高，支持宏和函数定义，非常适合需要大量定制化的项目。
-3. **Velocity**：
+3. Velocity：
     - **特点**：Velocity 是另一个强大的模板引擎，最初设计用于与Java一起工作，但也可以与其他技术结合使用。它提供了简洁的模板语言，易于学习和使用。
     - **优势**：轻量级，性能优秀，特别适合需要快速生成静态内容的应用。
-4. **Mustache**：
+4. Mustache：
     - **特点**：Mustache 是一种逻辑无感知的模板语言，可以用于多种编程语言，包括Java。它的设计理念是让模板保持简单，避免模板中出现复杂的逻辑。
     - **优势**：逻辑无感知，确保模板的简洁性和可维护性，易于与前后端开发人员协作。
-5. **Groovy Templates**：
+5. Groovy Templates：
     - **特点**：Groovy 是一种基于JVM的动态语言，它可以作为模板引擎使用。Groovy Templates 提供了非常灵活的模板编写方式，可以直接嵌入Groovy代码。
     - **优势**：对于熟悉Groovy语言的开发者来说，使用起来非常方便，可以快速实现复杂逻辑。
 
@@ -53,7 +53,7 @@ Java的模板技术有很多，SpringBoot支持以下的模板技术：
 
 
 
-![](https://cdn.nlark.com/yuque/0/2024/png/21376908/1730804471502-31c64115-c49a-4d76-92e0-90e9ae543b32.png)
+
 
 
 
@@ -103,7 +103,7 @@ public class HelloController {
 }
 ```
 
-![](https://cdn.nlark.com/yuque/0/2024/png/21376908/1730804471502-31c64115-c49a-4d76-92e0-90e9ae543b32.png)
+
 
 第四步：编写thymeleaf模板页面
 
@@ -124,9 +124,9 @@ public class HelloController {
 
 ![](https://cdn.nlark.com/yuque/0/2024/png/21376908/1730792132534-7b9358f0-98ff-43dc-8624-1717683b15aa.png)
 
-![](https://cdn.nlark.com/yuque/0/2024/png/21376908/1730804471502-31c64115-c49a-4d76-92e0-90e9ae543b32.png)
 
-## Thymeleaf的自动配置
+
+## 三、Thymeleaf的自动配置
 Thymeleaf的自动配置类：`ThymeleafAutoConfiguration`
 
 ![](https://cdn.nlark.com/yuque/0/2024/png/21376908/1730792250202-195d729c-66e5-46e9-b86e-6cf9494ef895.png)
@@ -143,11 +143,11 @@ Thymeleaf的自动配置类：`ThymeleafAutoConfiguration`
 
 
 
-![](https://cdn.nlark.com/yuque/0/2024/png/21376908/1730804471502-31c64115-c49a-4d76-92e0-90e9ae543b32.png)
 
-## Thymeleaf核心语法
+
+## 四、Thymeleaf核心语法
 ### th:text 替换标签体内容
-注意：在根标签<html>中引入 xmlns:th="[http://www.thymeleaf.org"](http://www.thymeleaf.org")，在编写`th:`语法时有智能提示。
+注意：在根标签\<html>中引入 xmlns:th="[http://www.thymeleaf.org"](http://www.thymeleaf.org")，在编写`th:`语法时有智能提示。
 
 `th:text`用来替换标签体内容的，例如：
 
@@ -161,8 +161,6 @@ th:text 语法：替换标签体中的内容
 ![](https://cdn.nlark.com/yuque/0/2024/png/21376908/1730794669882-1e70cf45-36bf-456f-97a1-6b1fb3b45f30.png)
 
 
-
-![](https://cdn.nlark.com/yuque/0/2024/png/21376908/1730804471502-31c64115-c49a-4d76-92e0-90e9ae543b32.png)
 
 
 
@@ -181,7 +179,7 @@ model.addAttribute("htmlCode", "<a href='http://www.bjpowernode.com'>动力节�
 ![](https://cdn.nlark.com/yuque/0/2024/png/21376908/1730795096806-e6cf0de5-6295-4e67-990b-97a9ace01976.png)
 
 ### th:utext 替换标签体内容
-作用和 `th:text`一样。只不过`th:utext`会将内容当做一段HTML代码解析并替换。将以上测试代码修改为：
+**作用和 `th:text`一样。只不过`th:utext`会将内容当做一段HTML代码解析并替换，即utext不会对html标签进行转义**。将以上测试代码修改为：
 
 ```html
 th:utext 语法：替换标签体中的内容
@@ -194,9 +192,11 @@ th:utext 语法：替换标签体中的内容
 
 
 
-![](https://cdn.nlark.com/yuque/0/2024/png/21376908/1730804471502-31c64115-c49a-4d76-92e0-90e9ae543b32.png)
+
 
 ### th:任意属性名 动态替换该属性的值
+**在 Thymeleaf 中，当使用 `th:` 标签动态替换属性值时，如果表达式的结果为空（`null` 或空字符串），默认不会替换原属性的值**
+
 例如：我们向域中存储以下数据
 
 ```java
@@ -217,8 +217,6 @@ th:任意属性名 语法：动态替换属性值
 ![](https://cdn.nlark.com/yuque/0/2024/png/21376908/1730795806734-d453db1e-86d3-4ecf-affb-cdff95491241.png)
 
 
-
-![](https://cdn.nlark.com/yuque/0/2024/png/21376908/1730804471502-31c64115-c49a-4d76-92e0-90e9ae543b32.png)
 
 ### th:attr 属性合并设置
 + 分开设置：
@@ -247,10 +245,10 @@ model.addAttribute("style", "color:red");
 <a th:attr="href=${hrefValue},style=${style}">动力节点</a>
 ```
 
-![](https://cdn.nlark.com/yuque/0/2024/png/21376908/1730804471502-31c64115-c49a-4d76-92e0-90e9ae543b32.png)
+
 
 ### th:指令
-指令非常多，具有代表性的例如：`th:if`，该指令用来控制元素`隐藏`和`显示`。
+指令非常多，**具有代表性的例如：`th:if`，该指令用来控制元素`隐藏`和`显示`。**
 
 在`static`静态资源目录下存放一张图片：dog1.jpg
 
@@ -270,12 +268,11 @@ model.addAttribute("style", "color:red");
 
 
 
-![](https://cdn.nlark.com/yuque/0/2024/png/21376908/1730804471502-31c64115-c49a-4d76-92e0-90e9ae543b32.png)
+
 
 ### @{} 表达式
-`${}`表达式语法是专门用来获取`model`中绑定的数据的。
-
-`@{}`表达式语法是专门用来维护URL请求路径的。它可以动态设置项目的根路径。
+* **`${}`表达式语法是专门用来获取`model`中绑定的数据的。**
+* **`@{}`表达式语法是专门用来维护URL请求路径的。它可以动态设置项目的根路径，它可以动态加项目名称**。
 
 
 
@@ -297,7 +294,7 @@ model.addAttribute("imgUrl", "/dog1.jpg");
 
 ![](https://cdn.nlark.com/yuque/0/2024/png/21376908/1730797446050-1a8e29e1-6339-4311-8420-73dee00a3d3d.png)
 
-![](https://cdn.nlark.com/yuque/0/2024/png/21376908/1730804471502-31c64115-c49a-4d76-92e0-90e9ae543b32.png)
+
 
 此时是可以正常显示的，但如果我们将web应用的根路径进行了修改，将其配置为：`/myweb`
 
@@ -323,14 +320,14 @@ server.servlet.context-path=/myweb
 
 ![](https://cdn.nlark.com/yuque/0/2024/png/21376908/1730797801499-a27a88b1-9024-4e0f-90fe-d2a64440d41c.png)
 
-![](https://cdn.nlark.com/yuque/0/2024/png/21376908/1730804471502-31c64115-c49a-4d76-92e0-90e9ae543b32.png)
+
 
 ### thymeleaf的内置工具
 内置工具很多，可以参考官方文档：[https://www.thymeleaf.org/doc/tutorials/3.1/usingthymeleaf.html#strings](https://www.thymeleaf.org/doc/tutorials/3.1/usingthymeleaf.html#strings)
 
 ![](https://cdn.nlark.com/yuque/0/2024/png/21376908/1730798338220-625af768-8576-4d24-a89d-46eaacef936c.png)
 
-![](https://cdn.nlark.com/yuque/0/2024/png/21376908/1730804471502-31c64115-c49a-4d76-92e0-90e9ae543b32.png)
+
 
 例如我们要完成这样一个效果，用户提交用户名时，如果名字中含有`jack`则显示`狗狗图片`，否则不显示。
 
@@ -348,7 +345,7 @@ server.servlet.context-path=/myweb
 
 ![](https://cdn.nlark.com/yuque/0/2024/png/21376908/1730798509202-cb67e7fe-f8ab-487e-ba9e-470ab50dcfbf.png)
 
-![](https://cdn.nlark.com/yuque/0/2024/png/21376908/1730804471502-31c64115-c49a-4d76-92e0-90e9ae543b32.png)
+
 
 ### thymeleaf也支持运算符
 例如`>`运算符，我们实现这样一个功能，如果提供的用户名长度大于6，则显示狗狗图片：
@@ -365,9 +362,9 @@ server.servlet.context-path=/myweb
 
 ![](https://cdn.nlark.com/yuque/0/2024/png/21376908/1730798741960-7e1c643d-9ac1-4796-972e-b61f23b988d4.png)
 
-![](https://cdn.nlark.com/yuque/0/2024/png/21376908/1730804471502-31c64115-c49a-4d76-92e0-90e9ae543b32.png)
 
-另外thymeleaf也支持三目运算符：
+
+**另外thymeleaf也支持三目运算符。并且在${}中，'男'代表的是字符串**：
 
 ```html
 <span th:text="${user.gender ? '男' : '女'}"></span>
@@ -382,7 +379,7 @@ server.servlet.context-path=/myweb
 
 
 ### thymeleaf的字符串拼接
-第一种方式：使用加号 `+`
+**第一种方式：使用加号 `+`**
 
 ```html
 <div th:text="${'姓名：' + name + '，年龄：18'}"></div>
@@ -392,9 +389,9 @@ server.servlet.context-path=/myweb
 
 ![](https://cdn.nlark.com/yuque/0/2024/png/21376908/1730798992476-8176fe7d-332f-4806-be1a-84923463232e.png)
 
-![](https://cdn.nlark.com/yuque/0/2024/png/21376908/1730804471502-31c64115-c49a-4d76-92e0-90e9ae543b32.png)
 
-第二种方式：使用竖线 `||`
+
+**第二种方式：使用竖线 `||`**
 
 ```html
 <div th:text="|姓名：${name}，年龄：18|"></div>
@@ -421,7 +418,7 @@ server.servlet.context-path=/myweb
 + user：代表集合中的每个元素
 + ${user.name}：元素的name属性值
 
-![](https://cdn.nlark.com/yuque/0/2024/png/21376908/1730804471502-31c64115-c49a-4d76-92e0-90e9ae543b32.png)
+
 
 遍历时也可以添加状态对象，代码示例：
 
@@ -447,14 +444,15 @@ server.servlet.context-path=/myweb
 </tr>
 ```
 
+效果如下图的所示：  
+![](assets/05SpringBoot整合Thymeleaf/file-20250815164912090.png)
 
 
 注意：以上`[[${state.index}]]`这种语法属于thymeleaf中的`内联表达式`写法。也可以写成：`[(${state.index})]`
 
-![](https://cdn.nlark.com/yuque/0/2024/png/21376908/1730804471502-31c64115-c49a-4d76-92e0-90e9ae543b32.png)
 
-另外，状态对象`state`的属性包括：
 
+**另外，状态对象`state（也可以是别的变量名）`的属性包括**：
 + index：下标
 + count：序号
 + current：当前对象
@@ -465,11 +463,11 @@ server.servlet.context-path=/myweb
 + last：是否为最后一个元素
 
 ### 条件判断th:if
-th:if 语法用来决定元素是否显示：true显示。false隐藏。
+**th:if 语法用来决定元素是否显示：true显示。false隐藏。**
 
-<div th:if="true">我是一个div元素</div>，则显示该div
+\<div th:if="true">我是一个div元素\</div>，则显示该div
 
-<div th:if="false">我也是一个div元素</div>，则隐藏该div
+\<div th:if="false">我也是一个div元素\</div>，则隐藏该div
 
 
 
@@ -493,12 +491,12 @@ th:if 语法用来决定元素是否显示：true显示。false隐藏。
 </td>
 ```
 
-![](https://cdn.nlark.com/yuque/0/2024/png/21376908/1730804471502-31c64115-c49a-4d76-92e0-90e9ae543b32.png)
+
 
 ### thymeleaf属性优先级
 thymeleaf的属性优先级非常重要，因为它直接决定了模板的解析和执行顺序。
 
-以下是Thymeleaf属性的优先级从高到低的列表，以表格形式展示：
+**以下是Thymeleaf属性的优先级从高到低的列表，以表格形式展示：**
 
 | 优先级 | 属性 | 描述 |
 | --- | --- | --- |
@@ -525,7 +523,6 @@ thymeleaf的属性优先级非常重要，因为它直接决定了模板的解�
 | 21 | `th:block` | 用于逻辑分组，不产生任何HTML输出。 |
 
 
-![](https://cdn.nlark.com/yuque/0/2024/png/21376908/1730804471502-31c64115-c49a-4d76-92e0-90e9ae543b32.png)
 
 对于thymeleaf属性优先级，我总结了以下一段话，把它记住即可：
 
@@ -538,7 +535,7 @@ thymeleaf的属性优先级非常重要，因为它直接决定了模板的解�
 3. **后操作**：`th:with`、`th:switch`、`th:case`、`th:remove`、`th:attr` 等用于局部变量定义、条件分支、属性操作等。
 4. **末内容**：`th:text`、`th:utext`、`th:html` 等用于设置元素的内容。
 
-### *{...} 表达式
+### \*{...} 表达式（不重要）
 `*{...}` 主要用于在上下文中访问对象的属性。这种表达式通常在表单处理和对象绑定场景中使用。
 
 
@@ -551,8 +548,6 @@ thymeleaf的属性优先级非常重要，因为它直接决定了模板的解�
 
 + 表单绑定：在表单中绑定对象的属性。
 + 对象属性访问：在模板中访问对象的属性，特别是当对象是当前上下文的一部分时。
-
-![](https://cdn.nlark.com/yuque/0/2024/png/21376908/1730804471502-31c64115-c49a-4d76-92e0-90e9ae543b32.png)
 
 **示例**
 
@@ -627,7 +622,7 @@ thymeleaf的属性优先级非常重要，因为它直接决定了模板的解�
 </footer>
 ```
 
-![](https://cdn.nlark.com/yuque/0/2024/png/21376908/1730804471502-31c64115-c49a-4d76-92e0-90e9ae543b32.png)
+
 
 在`a.html`中包含以上两个公共部分：
 
@@ -672,12 +667,12 @@ thymeleaf的属性优先级非常重要，因为它直接决定了模板的解�
 </html>
 ```
 
-![](https://cdn.nlark.com/yuque/0/2024/png/21376908/1730804471502-31c64115-c49a-4d76-92e0-90e9ae543b32.png)
+
 
 主要作用是代码复用。实现此功能的主要代码：
 
-+ 在公共代码部分使用`th:fragment="片段名称"`来声明公共代码片段的名字。
-+ 在需要引入的地方使用`th:replace="~{文件名去掉后缀 :: 片段名称}"`来引入。
++ **在公共代码部分使用`th:fragment="片段名称"`来声明公共代码片段的名字**。
++ **在需要引入的地方使用`th:replace="~{文件名去掉后缀 :: 片段名称}"`来引入。**
 
 
 
@@ -711,7 +706,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
 ```
 
-![](https://cdn.nlark.com/yuque/0/2024/png/21376908/1730804471502-31c64115-c49a-4d76-92e0-90e9ae543b32.png)
+
 
 ## thymeleaf页面修改如何立即生效
 第一步：引入springboot提供的`dev tools`
@@ -725,7 +720,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
 </dependency>
 ```
 
-第二步：关闭应用重启功能，如果不关闭会导致每一次修改java代码后立即重启应用，不建议。我们现在只希望做到的功能是，修改thymeleaf模板文件后立即生效。
+第二步：关闭应用重启功能，**如果不关闭会导致每一次修改java代码后立即重启应用，不建议。我们现在只希望做到的功能是，修改thymeleaf模板文件后立即生效**。
 
 ```properties
 spring.devtools.restart.enabled=false
@@ -739,4 +734,4 @@ spring.devtools.restart.enabled=false
 
 
 
-![](https://cdn.nlark.com/yuque/0/2024/png/21376908/1730804471502-31c64115-c49a-4d76-92e0-90e9ae543b32.png)
+

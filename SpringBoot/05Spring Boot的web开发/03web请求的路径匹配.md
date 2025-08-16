@@ -71,9 +71,9 @@ public class PathController {
 spring.mvc.pathmatch.matching-strategy=path_pattern_parser
 ```
 
-`PathPatternParser`风格是兼容Ant风格的。只有一个地方`PathPatternParser`不支持，Ant支持。在Ant风格中，`**`可以出现在任意位置。在`PathPatternParser`中只允许`**`出现在路径的末尾。
+**`PathPatternParser`风格是兼容Ant风格的。只有一个地方`PathPatternParser`不支持**，Ant支持。在Ant风格中，**`**`可以出现在任意位置。在`PathPatternParser`中只允许`**`出现在路径的末尾**。
 
-![](https://cdn.nlark.com/yuque/0/2024/png/21376908/1730804471502-31c64115-c49a-4d76-92e0-90e9ae543b32.png)
+
 
 可以测试一下，将配置文件中的Ant风格注释掉，采用`PathPatternParser`风格。然后控制器代码如下：
 
@@ -101,7 +101,7 @@ public class PathController {
 
 提示你，如果在路径当中出现了`**`，需要将路径匹配规则替换为Ant风格。因此路径当中如果出现`**`，那么必须使用Ant风格。除此之外，`PathPatternParser`均可用。
 
-![](https://cdn.nlark.com/yuque/0/2024/png/21376908/1730804471502-31c64115-c49a-4d76-92e0-90e9ae543b32.png)
+
 
 我们再来测试一下，`**`放到末尾，对于`PathPatternParser`是否可用？
 
@@ -116,11 +116,11 @@ public String path(HttpServletRequest request, @PathVariable String path){
 
 ![](https://cdn.nlark.com/yuque/0/2024/png/21376908/1730472772231-d18e628f-1b62-4757-9299-eaa604344ce6.png)
 
-![](https://cdn.nlark.com/yuque/0/2024/png/21376908/1730804471502-31c64115-c49a-4d76-92e0-90e9ae543b32.png)
 
-## 路径匹配相关源码
+
+## 3.路径匹配相关源码
 底层选择路径匹配规则的源码是：
 
+![1730451084171-157f7728-46f8-4715-8866-dcb1e9215206.png](https://cdn.nlark.com/yuque/0/2024/png/21376908/1730451084171-157f7728-46f8-4715-8866-dcb1e9215206.png)
 ![](https://cdn.nlark.com/yuque/0/2024/png/21376908/1730451084171-157f7728-46f8-4715-8866-dcb1e9215206.png)
 
-![](https://cdn.nlark.com/yuque/0/2024/png/21376908/1730804471502-31c64115-c49a-4d76-92e0-90e9ae543b32.png)
