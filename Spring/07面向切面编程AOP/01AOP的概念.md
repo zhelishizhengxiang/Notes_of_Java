@@ -112,9 +112,9 @@ execution([访问控制权限修饰符] 返回值类型 [全限定类名].方法
 
 理解以下的切点表达式：    
 ```java
-//通知切入的方法为：公开的、返回值类型任意的、com.powernode.mall.service包下所有的类以及该包下子包的所有类、以delete开始的、参数随意的方法
+//通知切入的方法为：公开的、返回值类型任意的、com.powernode.mall.service包下所有的类但不包括子包的所有类、以delete开始的、参数随意的方法
 execution(public * com.powernode.mall.service.*.delete*(..))
-//通知切入的方法为：访问修饰符随意、返回值类型随意、mall包下的所有的类所有的方法
+//通知切入的方法为：访问修饰符随意、返回值类型随意、mall包下的所有的类以及子包下的所有类所有的方法
 execution(* com.powernode.mall..*(..))
 //所有类的所有方法
 execution(* *(..))
