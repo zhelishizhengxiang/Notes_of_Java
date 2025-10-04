@@ -1,18 +1,18 @@
-# Netty框架
+
 
 前面我们学习了Java为我们提供的NIO框架，提供使用NIO提供的三大组件，我们就可以编写更加高性能的客户端/服务端网络程序了，甚至还可以自行规定一种通信协议进行通信。
 
-## NIO框架存在的问题
+## 一、NIO框架存在的问题
 
 但是之前我们在使用NIO框架的时候，还是发现了一些问题，我们先来盘点一下。
 
-### 客户端关闭导致服务端空轮询
+### 1.客户端关闭导致服务端空轮询
 
-可能在之前的实验中，你发现了这样一个问题：
+在选择器于多路复用通信中的代码中，你可能发现了这样一个问题：
 
 ![image-20230306173647589](https://s2.loli.net/2023/03/06/jCHunMSWTOsUwD6.png)
 
-当我们的客户端主动与服务端断开连接时，会导致READ事件一直被触发，也就是说`selector.select()`会直接通过，并且是可读的状态，但是我们发现实际上读到是数据是一个空的（上面的图中在空轮询两次后抛出异常了，也有可能是无限的循环下去）所以这里我们得稍微处理一下：
+**当我们的客户端主动与服务端断开连接时，会导致READ事件一直被触发，也就是说`selector.select()`会直接通过，并且是可读的状态，但是我们发现实际上读到是数据是一个空的**（上面的图中在空轮询两次后抛出异常了，也有可能是无限的循环下去）所以这里我们得稍微处理一下：
 
 ```java
 } else if(key.isReadable()) {
@@ -38,7 +38,7 @@
 
 ```java
 while (true) {
-    int count = selector.select();  //由于底层epoll机制的问题，导致select方法可能会一直返回0，造成无限循环的情况。
+    int count = selector.select();  //由于底层epoll机制的问题，导致select方法可能会一直返回0，造成无限循环空转的情况。
     System.out.println("监听到 "+count+" 个事件");
     Set<SelectionKey> selectionKeys = selector.selectedKeys();
     Iterator<SelectionKey> iterator = selectionKeys.iterator();
@@ -57,11 +57,11 @@ while (true) {
 
 不过，这个问题，却被Netty框架巧妙解决了，我们后面再说。
 
-### 粘包/拆包问题
+### 2.粘包/拆包问题
 
 除了上面的问题之外，我们接着来看下一个问题。
 
-我们在`计算机网络`这门课程中学习过，操作系统通过TCP协议发送数据的时候，也会先将数据存放在缓冲区中，而至于什么时候真正地发出这些数据，是由TCP协议来决定的，这是我们无法控制的事情。
+我们在`计算机网络`这门课程中学习过，**操作系统通过TCP协议发送数据的时候，也会先将数据存放在缓冲区中，而至于什么时候真正地发出这些数据，是由TCP协议来决定的，这是我们无法控制的事情**。
 
 ![image-20230306173718414](https://s2.loli.net/2023/03/06/ctmzGVl1BU3nAvp.png)
 
@@ -75,9 +75,9 @@ while (true) {
 
 当然，对于这种问题，也有一些比较常见的解决方案：
 
-1. 消息定长，发送方和接收方规定固定大小的消息长度，例如每个数据包大小固定为200字节，如果不够，空位补空格，只有接收了200个字节之后，作为一个完整的数据包进行处理。
-2. 在每个包的末尾使用固定的分隔符，比如每个数据包末尾都是`\r\n`，这样就一定需要读取到这样的分隔符才能将前面所有的数据作为一个完整的数据包进行处理。
-3. 将消息分为头部和本体，在头部中保存有当前整个数据包的长度，只有在读到足够长度之后才算是读到了一个完整的数据包。
+1. **消息定长**，发送方和接收方规定固定大小的消息长度，例如每**个数据包大小固定为200字节，如果不够，空位补空格，只有接收了200个字节之后，作为一个完整的数据包进行处理**。
+2. **在每个包的末尾使用固定的分隔符**，比如每个数据包末尾都是`\r\n`，这样就一定需要读取到这样的分隔符才能将前面所有的数据作为一个完整的数据包进行处理。
+3. **将消息分为头部和本体，在头部中保存有当前整个数据包的长度，只有在读到足够长度之后才算是读到了一个完整的数据包**。
 
 这里我们就来演示一下第一种解决方案：
 
@@ -118,11 +118,11 @@ public static void main(String[] args) {
 
 ***
 
-## 走进Netty框架
+## 二、走进Netty框架
 
 前面我们盘点了一下NIO存在的一些问题，而在Netty框架中，这些问题都被巧妙的解决了。
 
-Netty是由JBOSS提供的一个开源的java网络编程框架，主要是对java的nio包进行了再次封装。Netty比java原生的nio包提供了更加强大、稳定的功能和易于使用的api。 netty的作者是Trustin Lee，这是一个韩国人，他还开发了另外一个著名的网络编程框架，mina。二者在很多方面都十分相似，它们的线程模型也是基本一致 。不过netty社区的活跃程度要mina高得多。
+**Netty是由JBOSS提供的一个开源的java网络编程框架，主要是对java的nio包进行了再次封装。Netty比java原生的nio包提供了更加强大、稳定的功能和易于使用的api**。 netty的作者是Trustin Lee，这是一个韩国人，他还开发了另外一个著名的网络编程框架，mina。二者在很多方面都十分相似，它们的线程模型也是基本一致 。不过netty社区的活跃程度要mina高得多。
 
 Netty实际上应用场景非常多，比如我们的Minecraft游戏服务器：
 
@@ -130,9 +130,9 @@ Netty实际上应用场景非常多，比如我们的Minecraft游戏服务器：
 
 Java版本的Minecraft服务器就是使用Netty框架作为网络通信的基础，正是得益于Netty框架的高性能，我们才能愉快地和其他的小伙伴一起在服务器里面炸服。
 
-学习了Netty框架后，说不定你也可以摸索到部分Minecraft插件/模组开发的底层细节（太折磨了，UP主高中搞了大半年这玩意）
 
-当然除了游戏服务器之外，我们微服务之间的远程调用也可以使用Netty来完成，比如Dubbo的RPC框架，包括最新的SpringWebFlux框架，也抛弃了内嵌Tomcat而使用Netty作为通信框架。既然Netty这么强大，那么现在我们就开始Netty的学习吧！
+
+当然除了游戏服务器之外，**我们微服务之间的远程调用也可以使用Netty来完成，比如Dubbo的RPC框架，包括最新的SpringWebFlux框架，也抛弃了内嵌Tomcat而使用Netty作为通信框架**。既然Netty这么强大，那么现在我们就开始Netty的学习吧！
 
 导包先：
 
@@ -146,16 +146,17 @@ Java版本的Minecraft服务器就是使用Netty框架作为网络通信的基�
 </dependencies>
 ```
 
-### ByteBuf介绍
+### 1.ByteBuf介绍
 
-Netty并没有使用NIO中提供的ByteBuffer来进行数据装载，而是自行定义了一个ByteBuf类。
+**Netty并没有使用NIO中提供的ByteBuffer来进行数据装载，而是自行定义了一个ByteBuf类。**
 
 那么这个类相比NIO中的ByteBuffer有什么不同之处呢？
 
-* 写操作完成后无需进行`flip()`翻转。
+* **写操作完成后无需进行`flip()`翻转（因为有一个读指针和一个写指针）。**
 * 具有比ByteBuffer更快的响应速度。
-* 动态扩容。
+* **动态扩容。**
 
+###### 内部结构
 首先我们来看看它的内部结构：
 
 ```java
@@ -168,30 +169,33 @@ public abstract class AbstractByteBuf extends ByteBuf {
     private int maxCapacity;    //最大容量，没错，这玩意能动态扩容
 ```
 
-可以看到，读操作和写操作分别由两个指针在进行维护，每写入一次，`writerIndex`向后移动一位，每读取一次，也是`readerIndex`向后移动一位，当然`readerIndex`不能大于`writerIndex`，这样就不会像NIO中的ByteBuffer那样还需要进行翻转了。
+可以看到，**读操作和写操作分别由两个指针在进行维护，每写入一次，`writerIndex`向后移动一位，每读取一次，也是`readerIndex`向后移动一位**，当然`readerIndex`不能大于`writerIndex`，这样就不会像NIO中的ByteBuffer那样还需要进行翻转了。
 
-![image-20230814163638094](https://s2.loli.net/2023/08/14/4Tyji6RaMlCfQtn.png)
+![](assets/02Netty框架专题/file-20250928213810227.png)
 
 其中`readerIndex`和`writerIndex`之间的部分就是是可读的内容，而`writerIndex`之后到`capacity`都是可写的部分。
 
+###### 使用方法
 我们来实际使用一下看看：
 
 ```java
 public static void main(String[] args) {
     //创建一个初始容量为10的ByteBuf缓冲区，这里的Unpooled是用于快速生成ByteBuf的工具类
     //至于为啥叫Unpooled是池化的意思，ByteBuf有池化和非池化两种，区别在于对内存的复用，我们之后再讨论
-    ByteBuf buf = Unpooled.buffer(10);
+    ByteBuf buf = Unpooled.buffer(10);//分配空间的单位是字节
     System.out.println("初始状态："+Arrays.toString(buf.array()));
     buf.writeInt(-888888888);   //写入一个Int数据
     System.out.println("写入Int后："+Arrays.toString(buf.array()));
     buf.readShort();   //无需翻转，直接读取一个short数据出来
     System.out.println("读取Short后："+Arrays.toString(buf.array()));
-    buf.discardReadBytes();   //丢弃操作，会将当前的可读部分内容丢到最前面，并且读写指针向前移动丢弃的距离
+    buf.discardReadBytes();   //丢弃操作，会将当前的可读部分内容复制到最前面，并且读写指针向前移动复制的距离
     System.out.println("丢弃之后："+Arrays.toString(buf.array()));
-    buf.clear();    //清空操作，清空之后读写指针都归零
+    buf.clear();    //清空操作，清空之后读写指针都归零，但是数据还在
     System.out.println("清空之后："+Arrays.toString(buf.array()));
 }
 ```
+![](assets/02Netty框架专题/file-20250928214250946.png)
+* **创建ByteBuf需要使用Unpooled工具类来创建**
 
 通过结合断点调试，我们可以观察读写指针的移动情况，更加清楚的认识一下ByteBuf的底层操作。
 
@@ -199,9 +203,9 @@ public static void main(String[] args) {
 
 ```java
 public static void main(String[] args) {
-  	//我们也可以将一个byte[]直接包装进缓冲区（和NIO是一样的）不过写指针的值一开始就跑到最后去了，但是这玩意是不是只读的
+  	//我们也可以将一个byte[]直接包装进缓冲区（和NIO是一样的）不过写指针的值一开始就跑到最后去了，但是这玩意不是只读的，可以修改
     ByteBuf buf = Unpooled.wrappedBuffer("abcdefg".getBytes());
-  	//除了包装，也可以复制数据，copiedBuffer()会完完整整将数据拷贝到一个新的缓冲区中
+  	//除了包装，也可以复制数据，copiedBuffer()会完完整整将数据拷贝到一个新的缓冲区中，而不是直接包装
     buf.readByte();   //读取一个字节
     ByteBuf slice = buf.slice();   //现在读指针位于1，然后进行划分
 
@@ -209,10 +213,12 @@ public static void main(String[] args) {
     System.out.println(Arrays.toString(slice.array()));
 }
 ```
+![](assets/02Netty框架专题/file-20250928214942129.png)
 
 可以看到，划分也是根据当前读取的位置来进行的。
 
-我们继续来看看它的另一个特性，动态扩容，比如我们申请一个容量为10的缓冲区：
+###### 扩容机制
+**我们继续来看看它的另一个特性，动态扩容**，比如我们申请一个容量为10的缓冲区：
 
 ```java
 public static void main(String[] args) {
@@ -224,11 +230,11 @@ public static void main(String[] args) {
 }
 ```
 
-通过结果我们发现，在写入一个超出当前容量的数据时，会进行动态扩容，扩容会从64开始，之后每次触发扩容都会x2，当然如果我们不希望它扩容，可以指定最大容量：
+通过结果我们发现，在**写入一个超出当前容量的数据时，会进行动态扩容，第一次扩容那个会直接扩容到64，之后每次触发扩容都会x2**，当然如果我们不希望它扩容，可以指定最大容量：
 
 ```java
 public static void main(String[] args) {
-    //在生成时指定maxCapacity也为10
+    //在生成时指定maxCapacity也为10，构造器第二个参数
     ByteBuf buf = Unpooled.buffer(10, 10);
     System.out.println(buf.capacity());
     buf.writeCharSequence("卢本伟牛逼！", StandardCharsets.UTF_8);
@@ -238,15 +244,17 @@ public static void main(String[] args) {
 
 可以看到现在无法再动态扩容了：
 
+
+###### 缓冲区三种实现模式
 ![image-20230306173824953](https://s2.loli.net/2023/03/06/MyE5vbO1Vhpoxzj.png)
 
-我们接着来看一下缓冲区的三种实现模式：堆缓冲区模式、直接缓冲区模式、复合缓冲区模式。
+**我们接着来看一下缓冲区的三种实现模式：堆缓冲区模式、直接缓冲区模式、复合缓冲区模式。**(NIO只有前两种)
 
-堆缓冲区（数组实现）和直接缓冲区（堆外内存实现）不用多说，前面我们在NIO中已经了解过了，我们要创建一个直接缓冲区也很简单，直接调用：
+**堆缓冲区（数组实现）和直接缓冲区（堆外内存实现**）不用多说，前面我们在NIO中已经了解过了，我们要创建一个直接缓冲区也很简单，直接调用：
 
 ```java
 public static void main(String[] args) {
-    ByteBuf buf = Unpooled.directBuffer(10);
+    ByteBuf buf = Unpooled.directBuffer(10);//申请直接缓冲区
     System.out.println(Arrays.toString(buf.array()));
 }
 ```
@@ -255,29 +263,31 @@ public static void main(String[] args) {
 
 ![image-20230306174001430](https://s2.loli.net/2023/03/06/MraXOnlvekWNYfu.png)
 
-我们来看看复合模式，复合模式可以任意地拼凑组合其他缓冲区，比如我们可以：
+我们来看看复合模式，**复合模式可以任意地拼凑组合其他缓冲区**，比如我们可以：
 
 ![image-20230306174009890](https://s2.loli.net/2023/03/06/OmoL7vZDizgM9KT.png)
 
-这样，如果我们想要对两个缓冲区组合的内容进行操作，我们就不用再单独创建一个新的缓冲区了，而是直接将其进行拼接操作，相当于是作为多个缓冲区组合的视图。
+这样，**如果我们想要对两个缓冲区组合的内容进行操作，我们就不用再单独创建一个新的缓冲区了，而是直接将其进行拼接操作，相当于是作为多个缓冲区组合的视图**。
 
 ```java
-//创建一个复合缓冲区
+//创建一个复合缓冲区（若干个缓冲区的视图）
 CompositeByteBuf buf = Unpooled.compositeBuffer();
-buf.addComponent(Unpooled.copiedBuffer("abc".getBytes()));
+buf.addComponent(Unpooled.copiedBuffer("abc".getBytes()));//拼接缓冲区
 buf.addComponent(Unpooled.copiedBuffer("def".getBytes()));
 
 for (int i = 0; i < buf.capacity(); i++) {
     System.out.println((char) buf.getByte(i));
 }
 ```
+![](assets/02Netty框架专题/file-20250928215858658.png)
 
 可以看到我们也可以正常操作组合后的缓冲区。
+
+###### 池化缓冲区和非池化缓冲区的区别
 
 最后我们来看看，池化缓冲区和非池化缓冲区的区别。
 
 我们研究一下Unpooled工具类中具体是如何创建buffer的：
-
 ```java
 public final class Unpooled {
     private static final ByteBufAllocator ALLOC;  //实际上内部是有一个ByteBufAllocator对象的
@@ -305,7 +315,7 @@ public final class Unpooled {
 
 那么我们来看看，这个ByteBufAllocator又是个啥，顾名思义，其实就是负责分配缓冲区的。
 
-它有两个具体实现类：`UnpooledByteBufAllocator`和`PooledByteBufAllocator`，一个是非池化缓冲区生成器，还有一个是池化缓冲区生成器，那么池化和非池化有啥区别呢？
+它有两个具体实现类 **：`UnpooledByteBufAllocator`和`PooledByteBufAllocator`，一个是非池化缓冲区生成器，还有一个是池化缓冲区生成器**，那么池化和非池化有啥区别呢？
 
 实际上池化缓冲区利用了池化思想，将缓冲区通过设置内存池来进行内存块复用，这样就不用频繁地进行内存的申请，尤其是在使用堆外内存的时候，避免多次重复通过底层`malloc()`函数系统调用申请内存造成的性能损失。Netty的内存管理机制主要是借鉴Jemalloc内存分配策略，感兴趣的小伙伴可以深入了解一下。
 
@@ -320,25 +330,25 @@ public static void main(String[] args) {
     buf.release();    //释放此缓冲区
 
     ByteBuf buf2 = allocator.directBuffer(10);   //重新再申请一个同样大小的直接缓冲区
-    System.out.println(buf2 == buf);
+    System.out.println(buf2 == buf);//true
 }
 ```
 
 可以看到，在我们使用完一个缓冲区之后，我们将其进行资源释放，当我们再次申请一个同样大小的缓冲区时，会直接得到之前已经申请好的缓冲区，所以，PooledByteBufAllocator实际上是将ByteBuf实例放入池中在进行复用。
 
-### 零拷贝简介
+### 2.零拷贝简介
 
 **注意：** 此小节作为选学内容，需要掌握`操作系统`和`计算机组成原理`才能学习。
 
-零拷贝是一种I/O操作优化技术，可以快速高效地将数据从文件系统移动到网络接口，而不需要将其从内核空间复制到用户空间，首先第一个问题，什么是内核空间，什么又是用户空间呢？
+**零拷贝是一种I/O操作优化技术，可以快速高效地将数据从文件系统移动到网络接口，而不需要将其从内核空间复制到用户空间**，首先第一个问题，什么是内核空间，什么又是用户空间呢？
 
 其实早期操作系统是不区分内核空间和用户空间的，但是应用程序能访问任意内存空间，程序很容易不稳定，常常把系统搞崩溃，比如清除操作系统的内存数据。实际上让应用程序随便访问内存真的太危险了，于是就按照CPU 指令的重要程度对指令进行了分级，指令分为四个级别：Ring0 ~ Ring3，Linux 下只使用了 Ring0 和 Ring3 两个运行级别，进程运行在 Ring3 级别时运行在用户态，指令只访问用户空间，而运行在 Ring0 级别时被称为运行在内核态，可以访问任意内存空间。
 
 ![image-20230306174025216](https://s2.loli.net/2023/03/06/vFAi9dKxq72XngD.png)
 
-比如我们Java中创建一个新的线程，实际上最终是要交给操作系统来为我们进行分配的，而需要操作系统帮助我们完成任务则需要进行系统调用，是内核在进行处理，不是我们自己的程序在处理，这时就相当于我们的程序处于了内核态，而当操作系统底层分配完成，最后到我们Java代码中返回得到线程对象时，又继续由我们的程序进行操作，所以从内核态转换回了用户态。
+**比如我们Java中创建一个新的线程，实际上最终是要交给操作系统来为我们进行分配的**，而需要操作系统帮助我们完成任务则需要进行系统调用，是内核在进行处理，不是我们自己的程序在处理，这时就相当于我们的程序处于了内核态，而当操作系统底层分配完成，最后到我们Java代码中返回得到线程对象时，又继续由我们的程序进行操作，所以从内核态转换回了用户态。
 
-而我们的文件操作也是这样，我们实际上也是需要让操作系统帮助我们从磁盘上读取文件数据或是向网络发送数据，比如使用传统IO的情况下，我们要从磁盘上读取文件然后发送到网络上，就会经历以下流程：
+**而我们的文件操作也是这样，我们实际上也是需要让操作系统帮助我们从磁盘上读取文件数据或是向网络发送数据**，比如使用传统IO的情况下，我们要从磁盘上读取文件然后发送到网络上，就会经历以下流程：
 
 ![image-20230306174033340](https://s2.loli.net/2023/03/06/IYerlt95BLyFh7X.png)
 
@@ -368,9 +378,9 @@ public static void main(String[] args) {
 
    比如我们之前在NIO中使用的`transferTo()`方法，就是利用了这种机制来实现零拷贝的。
 
-### Netty工作模型
+### 3.Netty工作模型
 
-前面我们了解了Netty为我们提供的更高级的缓冲区类，我们接着来看看Netty是如何工作的，上一章我们介绍了Reactor模式，而Netty正是以主从Reactor多线程模型为基础，构建出了一套高效的工作模型。
+前面我们了解了Netty为我们提供的更高级的缓冲区类，我们接着来看看Netty是如何工作的，上一章我们介绍了Reactor模式，**而Netty正是以主从Reactor多线程模型为基础，构建出了一套高效的工作模型**。
 
 大致工作模型图如下：
 
@@ -382,9 +392,9 @@ public static void main(String[] args) {
 
 所有的客户端需要连接到主Reactor完成Accept操作后，其他的操作由从Reactor去完成，这里也是差不多的思想，但是它进行了一些改进，我们来看一下它的设计：
 
-* Netty 抽象出两组线程池BossGroup和WorkerGroup，BossGroup专门负责接受客户端的连接, WorkerGroup专门负读写，就像我们前面说的主从Reactor一样。
-* 无论是BossGroup还是WorkerGroup，都是使用EventLoop（事件循环，很多系统都采用了事件循环机制，比如前端框架Node.js，事件循环顾名思义，就是一个循环，不断地进行事件通知）来进行事件监听的，整个Netty也是使用事件驱动来运作的，比如当客户端已经准备好读写、连接建立时，都会进行事件通知，说白了就像我们之前写NIO多路复用那样，只不过这里换成EventLoop了而已，它已经帮助我们封装好了一些常用操作，而且我们可以自己添加一些额外的任务，如果有多个EventLoop，会存放在EventLoopGroup中，EventLoopGroup就是BossGroup和WorkerGroup的具体实现。
-* 在BossGroup之后，会正常将SocketChannel绑定到WorkerGroup中的其中一个EventLoop上，进行后续的读写操作监听。
+* **Netty 抽象出两组线程池BossGroup和WorkerGroup，BossGroup专门负责接受客户端的连接, WorkerGroup专门负责读写，就像我们前面说的主从Reactor一样**。
+* **无论是BossGroup还是WorkerGroup，都是使用EventLoop（事件循环**，很多系统都采用了事件循环机制，比如前端框架Node.js，事件循环顾名思义，就是一个循环，不断地进行事件通知）来进行事件监听的，**整个Netty也是使用事件驱动来运作的，比如当客户端已经准备好读写、连接建立时，都会进行事件通知**，说白了就像我们之前写NIO多路复用那样，只不过这里换成**EventLoop了而已，它已经帮助我们封装好了一些常用操作，而且我们可以自己添加一些额外的任务，如果有多个EventLoop，会存放在EventLoopGroup中，EventLoopGroup就是BossGroup和WorkerGroup的具体实现**。
+* **在BossGroup之后，会正常将SocketChannel绑定到WorkerGroup中的其中一个EventLoop上，进行后续的读写操作监听**。
 
 前面我们大致了解了一下Netty的工作模型，接着我们来尝试创建一个Netty服务器：
 
@@ -400,11 +410,12 @@ public static void main(String[] args) {
     bootstrap
             .group(bossGroup, workerGroup)   //指定事件循环组
             .channel(NioServerSocketChannel.class)   //指定为NIO的ServerSocketChannel
-            .childHandler(new ChannelInitializer<SocketChannel>() {   //注意，这里的SocketChannel不是我们NIO里面的，是Netty的
+            .childHandler(new ChannelInitializer<SocketChannel>() {   //注意，这里的SocketChannel不是我们NIO里面的，是Netty的。这里的childHandler其实就是工作线程
                 @Override
                 protected void initChannel(SocketChannel channel) {
-                    //获取流水线，当我们需要处理客户端的数据时，实际上是像流水线一样在处理，这个流水线上可以有很多Handler
-                    channel.pipeline().addLast(new ChannelInboundHandlerAdapter(){   //添加一个Handler，这里使用ChannelInboundHandlerAdapter
+                    //获取流水线，当我们需要处理客户端的数据时，实际上是像流水线一样在处理，这个流水线上可以有很多Handler。每个工作线程handler处理一部分
+                    channel.pipeline().addLast(new ChannelInboundHandlerAdapter(){   //添加一个Handler，这里使用ChannelInboundHandlerAdapter ，inbound入站的意思
+	                    //当客户端发送给我们数据的时候，底层会自动调用channelRead()
                         @Override
                         public void channelRead(ChannelHandlerContext ctx, Object msg) {  //ctx是上下文，msg是收到的消息，默认以ByteBuf形式（也可以是其他形式，后面再说）
                             ByteBuf buf = (ByteBuf) msg;   //类型转换一下
@@ -415,7 +426,7 @@ public static void main(String[] args) {
                     });
                 }
             });
-    //最后绑定端口，启动
+    //最后绑定端口，就自动启动启动
     bootstrap.bind(8080);
 }
 ```
@@ -450,12 +461,11 @@ public static void main(String[] args) {
 
 通过通道正常收发数据即可，这样我们就成功搭建好了一个Netty服务器。
 
-### Channel详解
+### 4.Channel详解
 
 在学习NIO时，我们就已经接触到Channel了，我们可以通过通道来进行数据的传输，并且通道支持双向传输。
 
-而在Netty中，也有对应的Channel类型：
-
+**在Netty中，也有对应的Channel类型：没有直接集成NIO中的Channel，而是使用的自己的**
 ```java
 public interface Channel extends AttributeMap, ChannelOutboundInvoker, Comparable<Channel> {
     ChannelId id();   //通道ID
@@ -480,9 +490,9 @@ public interface Channel extends AttributeMap, ChannelOutboundInvoker, Comparabl
 }
 ```
 
-可以看到，Netty中的Channel相比NIO功能就多得多了。Netty中的Channel主要特点如下：
+可以看到，Netty中的Channel相比NIO功能就多得多了。**Netty中的Channel主要特点如下：**
 
-* 所有的IO操作都是异步的，并不是在当前线程同步运行，方法调用之后就直接返回了，那怎么获取操作的结果呢？还记得我们在前面JUC篇教程中学习的Future吗，没错，这里的ChannelFuture也是干这事的。
+* **所有的IO操作都是异步的，并不是在当前线程同步运行，方法调用之后就直接返回了，那怎么获取操作的结果呢**？**还记得我们在前面JUC篇教程中学习的Future吗，没错，这里的ChannelFuture也是干这事的。**
 
 我们可以来看一下Channel接口的父接口ChannelOutboundInvoker接口，这里面定义了大量的I/O操作：
 
@@ -516,7 +526,7 @@ public interface ChannelOutboundInvoker {   //通道出站调用（包含大量�
 }
 ```
 
-当然它还实现了AttributeMap接口，其实有点类似于Session那种感觉，我们可以添加一些属性之类的：
+当然它还实现了**AttributeMap接口，其实有点类似于Session那种感觉，我们可以添加一些属性之类的**：
 
 ```java
 public interface AttributeMap {
@@ -526,11 +536,11 @@ public interface AttributeMap {
 }
 ```
 
-我们了解了Netty底层的Channel之后，我们接着来看ChannelHandler，既然现在有了通道，那么怎么进行操作呢？我们可以将需要处理的事情放在ChannelHandler中，ChannelHandler充当了所有入站和出站数据的应用程序逻辑的容器，实际上就是我们之前Reactor模式中的Handler，全靠它来处理读写操作。
+我们了解了Netty底层的Channel之后，我们接着来看**ChannelHandler(即工作线程)**，既然现在有了通道，那么怎么进行操作呢？**我们可以将需要处理的事情放在ChannelHandler中，ChannelHandler充当了所有入站和出站数据的应用程序逻辑的容器，实际上就是我们之前Reactor模式中的Handler，全靠它来处理读写操作**。
 
-不过这里不仅仅是一个简单的ChannelHandler在进行处理，而是一整套流水线，我们之后会介绍ChannelPipeline。
+**不过这里不仅仅是一个简单的ChannelHandler在进行处理，而是一整套流水线，我们之后会介绍ChannelPipeline**。
 
-比如我们上面就是使用了ChannelInboundHandlerAdapter抽象类，它是ChannelInboundHandler接口的实现，用于处理入站数据，可以看到我们实际上就是通过重写对应的方法来进行处理，这些方法会在合适的时间被调用：
+**比如我们上面就是使用了ChannelInboundHandlerAdapter抽象类，它是ChannelInboundHandler接口的实现，用于处理入站数据，可以看到我们实际上就是通过重写对应的方法来进行处理，这些方法会在合适的时间被调用**：
 
 ```java
 channel.pipeline().addLast(new ChannelInboundHandlerAdapter(){
@@ -567,7 +577,7 @@ public interface ChannelHandler {
 }
 ```
 
-顶层接口的定义比较简单，就只有一些流水线相关的回调方法，我们接着来看下一级：
+顶层接口的定义比较简单，**就只有一些流水线相关的回调方法**，我们接着来看下一级：
 
 ```java
 //ChannelInboundHandler用于处理入站相关事件
@@ -580,7 +590,7 @@ public interface ChannelInboundHandler extends ChannelHandler {
     void channelActive(ChannelHandlerContext var1) throws Exception;
 		//跟上面相反，不再活跃了，并且不在连接它的远程节点
     void channelInactive(ChannelHandlerContext var1) throws Exception;
-		//当从Channel读取数据时被调用，可以看到数据被自动包装成了一个Object（默认是ByteBuf）
+		//**关键方法：当从Channel读取数据时被调用，可以看到数据被自动包装成了一个Object（默认是ByteBuf）
     void channelRead(ChannelHandlerContext var1, Object var2) throws Exception;
 		//上一个读取操作完成后调用
     void channelReadComplete(ChannelHandlerContext var1) throws Exception;
@@ -593,10 +603,11 @@ public interface ChannelInboundHandler extends ChannelHandler {
 }
 ```
 
-而我们上面用到的ChannelInboundHandlerAdapter实际上就是对这些方法实现的抽象类，相比直接用接口，我们可以只重写我们需要的方法，没有重写的方法会默认向流水线下一个ChannelHandler发送。
+**而我们上面用到的ChannelInboundHandlerAdapter实际上就是对这些方法实现的抽象类，相比直接用接口，我们可以只重写我们需要的方法，没有重写的方法会默认向流水线下一个ChannelHandler发送**。
 
 我们来测试一下吧：
 
+注：**这些方法在ChannelInboundHandlerAdapter默认情况下有实现，不过代码的作用是交给流水线下一个Handler来处理**
 ```java
 public class TestChannelHandler extends ChannelInboundHandlerAdapter {
 
@@ -656,7 +667,7 @@ public static void main(String[] args) {
                 @Override
                 protected void initChannel(SocketChannel channel) {
                     //将我们自定义的ChannelHandler添加到流水线
-                    channel.pipeline().addLast(new TestChannelHandler());
+                    channel.pipeline().addLast(new TestChannelHandler());//添加我们自己写的测试handler
                 }
             });
     bootstrap.bind(8080);
@@ -667,7 +678,7 @@ public static void main(String[] args) {
 
 ![image-20230306174158886](https://s2.loli.net/2023/03/06/Tk7PyBU5cRil89L.png)
 
-可以看到ChannelInboundHandler的整个生命周期，首先是Channel注册成功，然后才会变成可用状态，接着就差不多可以等待客户端来数据了，当客户端主动断开连接时，会再次触发一次`channelReadComplete`，然后不可用，最后取消注册。
+**可以看到ChannelInboundHandler的整个生命周期，首先是Channel注册成功，然后才会变成可用状态，接着就差不多可以等待客户端来数据了，当客户端主动断开连接时，会再次触发一次`channelReadComplete`，然后不可用，最后取消注册**。
 
 我们来测试一下出现异常的情况呢？
 
@@ -693,6 +704,7 @@ public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws E
     System.out.println("exceptionCaught"+cause);
 }
 ```
+![](assets/02Netty框架专题/file-20250929002610057.png)
 
 可以看到发生异常时，会接着调用`exceptionCaught`方法：
 
@@ -700,18 +712,22 @@ public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws E
 
 与ChannelInboundHandler对应的还有ChannelOutboundHandler用于处理出站相关的操作，这里就不进行演示了。
 
-我们接着来看看ChannelPipeline，每一个Channel都对应一个ChannelPipeline（在Channel初始化时就被创建了）
+#### 4.2Channel Pipeline
+我们接着来看看ChannelPipeline，**每一个Channel都对应一个ChannelPipeline（在Channel初始化时就被创建了）**
 
 ![image-20230306174211952](https://s2.loli.net/2023/03/06/lSAjPCskUT9miNd.png)
 
-它就像是一条流水线一样，整条流水线上可能会有很多个Handler（包括入站和出站），整条流水线上的两端还有两个默认的处理器（用于一些预置操作和后续操作，比如释放资源等），我们只需要关心如何安排这些自定义的Handler即可，比如我们现在希望创建两个入站ChannelHandler，一个用于接收请求并处理，还有一个用于处理当前接收请求过程中出现的异常：
+**Channel在监听到事件之后，其会通过Handler进行一定的处理，就会通过流水线上的handler一次进行处理。整个流水线是通过双线链表进行维护的**
+
+**它就像是一条流水线一样，整条流水线上可能会有很多个Handler（包括入站和出站），整条流水线上的两端还有两个默认的处理器（创建后自动拥有相当于头节点和尾节点，用于一些预置操作和后续操作，比如释放资源等），我们只需要关心如何安排这些自定义的Handler即可**，比如我们现在希望创建两个入站ChannelHandler，一个用于接收请求并处理，还有一个用于处理当前接收请求过程中出现的异常：
 
 ```java
 .childHandler(new ChannelInitializer<SocketChannel>() {   //注意，这里的SocketChannel不是我们NIO里面的，是Netty的
     @Override
     protected void initChannel(SocketChannel channel) {
-        channel.pipeline()   //直接获取pipeline，然后添加两个Handler，注意顺序
-                .addLast(new ChannelInboundHandlerAdapter(){   //第一个用于处理消息接收
+        channel.pipeline()   //直接获取pipeline，然后添加两个Handler，注意顺序。入站是从前往后。出站是从尾部倒着到头部
+		        //一个用于接收请求并处理
+                .addLast(new ChannelInboundHandlerAdapter(){   
                     @Override
                     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
                         ByteBuf buf = (ByteBuf) msg;
@@ -719,7 +735,8 @@ public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws E
                         throw new RuntimeException("我是异常");
                     }
                 })
-                .addLast(new ChannelInboundHandlerAdapter(){   //第二个用于处理异常
+                //用于处理当前接收请求过程中出现的异常
+                .addLast(new ChannelInboundHandlerAdapter(){   
                     @Override
                     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
                         System.out.println("我是异常处理："+cause);
@@ -729,7 +746,7 @@ public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws E
 });
 ```
 
-那么它是如何运作的呢？实际上如果我们不在ChannelInboundHandlerAdapter中重写对应的方法，它会默认传播到流水线的下一个ChannelInboundHandlerAdapter进行处理，比如：
+那么它是如何运作的呢？**实际上如果我们不在ChannelInboundHandlerAdapter中重写对应的方法，它会默认传播到流水线的下一个ChannelInboundHandlerAdapter进行处理**，比如：
 
 ```java
 public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
@@ -748,7 +765,7 @@ protected void initChannel(SocketChannel channel) {
                 public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
                     ByteBuf buf = (ByteBuf) msg;
                     System.out.println("1接收到客户端发送的数据："+buf.toString(StandardCharsets.UTF_8));
-                    ctx.fireChannelRead(msg);   //通过ChannelHandlerContext
+                    ctx.fireChannelRead(msg);   //通过ChannelHandlerContext传递给2第二个继续进行处理 
                 }
             })
             .addLast(new ChannelInboundHandlerAdapter(){
@@ -763,6 +780,9 @@ protected void initChannel(SocketChannel channel) {
 
 我们接着来看看出站相关操作，我们可以使用ChannelOutboundHandlerAdapter来完成：
 
+* **注意出站操作应该在入站操作的前面，当我们使用ChannelHandlerContext的write方法时，是从流水线的当前位置倒着往前找下一个ChannelOutboundHandlerAdapter**
+* **如果我们使用的是Channel的write方法，那么会从整个流水线的最后开始倒着往前找ChannelOutboundHandlerAdapter**
+* **数据在达到流水线HandlerPipeLine时，只会走入站的Handler的。只有当执行写操作比如writeAndFlush()，才会去进入出站处理器。具体是从当前代码的位置倒着往前找有没有在该入站处理器之前定义出站处理器。如果想要从整个流水线的后面开始找ChannelOutboundHandlerAdapter的话，就需要使用ctx.channel().writeAndFlush()**
 ```java
 @Override
 protected void initChannel(SocketChannel channel) {
@@ -772,7 +792,7 @@ protected void initChannel(SocketChannel channel) {
                 @Override
                 public void write(ChannelHandlerContext ctx, Object msg, ChannelPromise promise) throws Exception {  //当执行write操作时，会
                     System.out.println(msg);   //write的是啥，这里就是是啥
-                  	//我们将其转换为ByteBuf，这样才能发送回客户端
+                  	//**我们将其转换为ByteBuf，这样才能发送回客户端**
                     ctx.writeAndFlush(Unpooled.wrappedBuffer(msg.toString().getBytes()));
                 }
             })
@@ -795,8 +815,16 @@ protected void initChannel(SocketChannel channel) {
             });
 }
 ```
+如果将出站处理器代码放在入站处理器前面，执行ctx.writeAndFlush()，执行结果如图所示：  
+![](assets/02Netty框架专题/file-20250929005507618.png)
 
-现在我们来试试看，搞两个出站的Handler，验证一下是不是上面的样子：
+如果将出站处理器代码放在入站处理器后面，执行ctx.writeAndFlush()，执行结果如图所示：  即不会执行出战处理器的回调方法write  
+![](assets/02Netty框架专题/file-20250929005540077.png)
+
+如果将出站处理器代码放在入站处理器后面，执行ctx.channel().writeAndFlush()，执行结果如图所示     
+![](assets/02Netty框架专题/file-20250929005723927.png)
+
+现在我们来试试看，搞两个出站的Handler，验证一下是不是倒着查找出站处理器的样子：
 
 ```java
 @Override
@@ -833,6 +861,8 @@ protected void initChannel(SocketChannel channel) {
             });
 }
 ```
+![](assets/02Netty框架专题/file-20250929005939376.png)
+
 
 所以，出站操作在流水线上是反着来的，整个流水线操作大概流程如下:
 
@@ -840,21 +870,21 @@ protected void initChannel(SocketChannel channel) {
 
 有关Channel及其处理相关操作，就先讲到这里。
 
-### EventLoop和任务调度
+### 5.EventLoop和任务调度
 
-前面我们讲解了Channel，那么在EventLoop中具体是如何进行调度的呢？实际上我们之前在编写NIO的时候，就是一个while循环在源源不断地等待新的事件，而EventLoop也正是这种思想，它本质就是一个事件等待/处理线程。
+前面我们讲解了Channel，那么在EventLoop中具体是如何进行调度的呢？实际上我们之前在编写NIO的时候，就是一个**while循环在源源不断地等待新的事件，而EventLoop也正是这种思想，它本质就是一个事件等待/处理线程**。
 
 ![image-20230306174245836](https://s2.loli.net/2023/03/06/6Z1evQGNayObnD5.png)
 
-我们上面使用的就是EventLoopGroup，包含很多个EventLoop，我们每创建一个连接，就需要绑定到一个EventLoop上，之后EventLoop就会开始监听这个连接（只要连接不关闭，一直都是这个EventLoop负责此Channel），而一个EventLoop可以同时监听很多个Channel，实际上就是我们之前学习的Selector罢了。
+**我们上面使用的就是EventLoopGroup，包含很多个EventLoop（每个EventLoop相当于一个selector），我们每创建一个连接，就需要绑定到一个EventLoop上，之后EventLoop就会开始监听这个连接**（只要连接不关闭，一直都是这个EventLoop负责此Channel），而一个EventLoop可以同时监听很多个Channel，实际上就是我们之前学习的Selector罢了。
 
-当然，EventLoop并不只是用于网络操作的，我们前面所说的EventLoop其实都是NioEventLoop，它是专用于网络通信的，除了网络通信之外，我们也可以使用普通的EventLoop来处理一些其他的事件。
+当然，EventLoop并不只是用于网络操作的，**我们前面所说的EventLoop其实都是NioEventLoop，它是专用于网络通信的，除了网络通信之外，我们也可以使用普通的EventLoop来处理一些其他的事件。**
 
 比如我们现在编写的服务端，虽然结构上和主从Reactor多线程模型差不多，但是我们发现，Handler似乎是和读写操作在一起进行的，而我们之前所说的模型中，Handler是在读写之外的单独线程中进行的：
 
 ```java
 public static void main(String[] args) {
-    EventLoopGroup bossGroup = new NioEventLoopGroup(), workerGroup = new NioEventLoopGroup(1);  //线程数先限制一下
+    EventLoopGroup bossGroup = new NioEventLoopGroup(), workerGroup = new NioEventLoopGroup(1);  //指定线程数先限制一下
     ServerBootstrap bootstrap = new ServerBootstrap();
     bootstrap
             .group(bossGroup, workerGroup)   //指定事件循环组
@@ -878,7 +908,7 @@ public static void main(String[] args) {
 }
 ```
 
-可以看到，如果在这里卡住了，那么就没办法处理EventLoop绑定的其他Channel了，所以我们这里就创建一个普通的EventLoop来专门处理读写之外的任务：
+可以看到，**如果在这里卡住了，那么就没办法处理EventLoop绑定的其他Channel了，所以我们这里就创建一个普通的EventLoop来专门处理读写之外的任务**：
 
 ```java
 public static void main(String[] args) {
@@ -897,8 +927,9 @@ public static void main(String[] args) {
                                 public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
                                     ByteBuf buf = (ByteBuf) msg;
                                   	System.out.println("接收到客户端发送的数据："+buf.toString(StandardCharsets.UTF_8));
+                                  	//处理数据的过程，
                                     handlerGroup.submit(() -> {   
-                                //由于继承自ScheduledExecutorService，我们直接提交任务就行了，是不是感觉贼方便
+                                //由于继承自ScheduledExecutorService，也就是说是要给线程池。我们直接提交任务就行了，是不是感觉贼方便
                                         try {
                                             Thread.sleep(10000);
                                         } catch (InterruptedException e) {
@@ -914,7 +945,7 @@ public static void main(String[] args) {
 }
 ```
 
-当然我们也可以写成一条流水线：
+当然我们也可以写成一条handlerpipeLine流水线：
 
 ```java
 public static void main(String[] args) {
@@ -933,6 +964,7 @@ public static void main(String[] args) {
                                 public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
                                     ByteBuf buf = (ByteBuf) msg;
                                     System.out.println("接收到客户端发送的数据："+buf.toString(StandardCharsets.UTF_8));
+                                    //交给下一个入站处理器来处理
                                     ctx.fireChannelRead(msg);
                                 }
                             }).addLast(handlerGroup, new ChannelInboundHandlerAdapter(){  //在添加时，可以直接指定使用哪个EventLoopGroup
@@ -969,12 +1001,13 @@ public static void main(String[] args) {
                         @Override
                         public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
                             ByteBuf buf = (ByteBuf) msg;
-                            System.out.println(">> 接收到客户端发送的数据："+buf.toString(StandardCharsets.UTF_8));
+                            System.out.println(">> 接收到服务端发回的数据："+buf.toString(StandardCharsets.UTF_8));
                         }
                     });
                 }
             });
-    Channel channel = bootstrap.connect("localhost", 8080).channel();  //连接后拿到对应的Channel对象
+            //这里获得的channel就是启动的这个客户端的channel对象
+    Channel channel = bootstrap.connect("localhost", 8080).channel();  //建立连接后拿到对应的Channel对象
   	//注意上面连接操作是异步的，调用之后会继续往下走，下面我们就正式编写客户端的数据发送代码了
     try(Scanner scanner = new Scanner(System.in)){    //还是和之前一样，扫了就发
         while (true) {
@@ -991,7 +1024,7 @@ public static void main(String[] args) {
 
 ![image-20230306174303352](https://s2.loli.net/2023/03/06/cnbxqteVo62da8p.png)
 
-### Future和Promise
+### 6.Future和Promise
 
 我们接着来看ChannelFuture，前面我们提到，Netty中Channel的相关操作都是异步进行的，并不是在当前线程同步执行，我们不能立即得到执行结果，如果需要得到结果，那么我们就必须要利用到Future。
 
@@ -1950,6 +1983,3 @@ private boolean unexpectedSelectorWakeup(int selectCnt) {
 实际上，当每次空轮询发生时会有专门的计数器+1，如果空轮询的次数超过了512次，就认为其触发了空轮询bug，触发bug后，Netty直接重建一个Selector，将原来的Channel重新注册到新的 Selector上，将旧的 Selector关掉，这样就防止了无限循环。
 
 
-————————————————
-版权声明：本文为柏码知识库版权所有，禁止一切未经授权的转载、发布、出售等行为，违者将被追究法律责任。
-原文链接：https://www.itbaima.cn/zh-CN/document/ndz9t0uunrmfmv4n

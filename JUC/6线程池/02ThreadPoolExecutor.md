@@ -40,7 +40,7 @@
 
 
 ![](assets/02ThreadPoolExecutor/file-20250920161343646.png)
-* 如果线程到达 maximumPoolSize 仍然有新任务这时会执行拒绝策略。拒绝策略 jdk 提供了 4 种实现（具体为上图），
+* 如果线程到达 maximumPoolSize且任务队列已经满， 仍然有新任务这时会执行拒绝策略。拒绝策略 jdk 提供了 4 种实现（具体为上图），
 	* **AbortPolicy 让调用者抛出 RejectedExecutionException 异常，这是默认策略**
 	* **CallerRunsPolicy 让调用者运行任务**
 	* **DiscardPolicy 放弃本次任务**

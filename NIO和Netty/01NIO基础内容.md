@@ -341,13 +341,13 @@ public static void main(String[] args) {
 
 翻转之后再次进行转移，就正常了。
 
-### 1.3缓冲区读操作
+### 1.3缓冲区读操作——get
 
 前面我们看完了写操作，现在我们接着来看看读操作。读操作有四个方法：
 
 * `public abstract int get();`    -    直接获取当前position位置的数据，由子类实现
 * `public abstract int get(int index); `  -    获取指定位置的数据，也是子类实现
-* `public IntBuffer get(int[] dst)`  -   将数据读取到给定的数组中，缓冲区的中的内容会将给定数组读取满。如果缓冲区大小小于给定数组大小，那么会报错
+* `public IntBuffer get(int[] dst)`  -   将数据读取到给定的数组中，缓冲区的中的内容会将给定数组尽量读满。如果缓冲区大小小于给定数组大小，那么会报错
 * `public IntBuffer get(int[] dst, int offset, int length)`  -   同上，加了个范围。从给定数组的第offset+1个元素开始读取缓冲区length个元素
 
 我们还是从最简单的开始看，第一个get方法的实现在IntBuffer类中：
@@ -1915,7 +1915,7 @@ public static void main(String[] args) {
 
 * **select：当这些连接出现具体的某个状态时，只是知道已经就绪了，但是不知道详具体是哪一个连接已经就绪，每次调用都进行线性遍历所有连接，时间复杂度为`O(n)`，并且存在最大连接数限制**。
 * **poll：同上，但是由于底层采用链表，所以没有最大连接数限制**。
-* **epoll：采用事件通知方式，当某个连接就绪，能够直接进行精准通知（这是因为在内核实现中epoll是根据每个fd上面的callback函数实现的，只要就绪会会直接回调callback函数，实现精准通知，但是只有Linux支持这种方式），时间复杂度`O(1)`，Java在Linux环境下正是采用的这种模式进行实现的。**
+* **epoll：采用事件通知方式，当某个连接就绪，能够直接进行精准通知（这是因为在内核实现中epoll是根据每个fd上面的callback函数实现的，只要就绪会直接回调callback函数，实现精准通知，但是只有Linux支持这种方式），时间复杂度`O(1)`，Java在Linux环境下正是采用的这种模式进行实现的。**
 
 好了，既然多路复用模型了解完毕了，那么我们就来看看如何让我们的网络通信实现多路复用：
 
@@ -1927,7 +1927,7 @@ public static void main(String[] args) {
         serverChannel.bind(new InetSocketAddress(8080));
         //要使用选择器进行操作，必须使用非阻塞的方式，这样才不会像阻塞IO那样卡在accept()，而是直接通过，让选择器去进行下一步操作
         serverChannel.configureBlocking(false);
-        //将选择器注册到ServerSocketChannel中，后面是选择需要监听的时间，只有发生对应事件时才会进行选择，多个事件用 | 连接，注意，并不是所有的Channel都支持以下全部四个事件，可能只支持部分
+        //将选择器注册到ServerSocketChannel中，后面是选择需要监听的事件，只有发生对应事件时才会进行选择，多个事件用 | 连接，注意，并不是所有的Channel都支持以下全部四个事件，可能只支持部分
         //因为是ServerSocketChannel这里我们就监听accept就可以了，等待客户端连接
         //SelectionKey.OP_CONNECT --- 连接就绪事件，表示客户端与服务器的连接已经建立成功
         //SelectionKey.OP_ACCEPT --- 接收连接事件，表示服务器监听到了客户连接，服务器可以接收这个连接了
@@ -1938,19 +1938,22 @@ public static void main(String[] args) {
             //每次选择都可能会选出多个已经就绪的网络操作，没有对应的网络操作等待被选择时会暂时阻塞在该语句
             int count = selector.select();
             System.out.println("监听到 "+count+" 个事件");
+            //监听到的事件都会封装成一个selectionKey对象
             Set<SelectionKey> selectionKeys = selector.selectedKeys();
             Iterator<SelectionKey> iterator = selectionKeys.iterator();
             while (iterator.hasNext()) {
                 SelectionKey key = iterator.next();
                 //根据不同的事件类型，执行不同的操作即可
-                if(key.isAcceptable()) {  //如果当前ServerSocketChannel已经做好准备处理Accept
+                if(key.isAcceptable()) {  //如果当前是连接事件
                     SocketChannel channel = serverChannel.accept();
                     System.out.println("客户端已连接，IP地址为："+channel.getRemoteAddress());
                     //现在连接就建立好了，接着我们需要将连接也注册选择器，比如我们需要当这个连接有内容可读时就进行处理
                     channel.configureBlocking(false);
+                    //注册后客户端的socketchannel发送了数据，selector可以检索道给selectchannel
                     channel.register(selector, SelectionKey.OP_READ);
                     //这样就在连接建立时完成了注册
-                } else if(key.isReadable()) {    //如果当前连接有可读的数据并且可以写，那么就开始处理
+                } else if(key.isReadable()) {    //如果当前是读就绪事件
+	                //通过监听到的事件来获得对应的socketchannel对象
                     SocketChannel channel = (SocketChannel) key.channel();
                     ByteBuffer buffer = ByteBuffer.allocate(128);
                     channel.read(buffer);
@@ -2137,6 +2140,9 @@ public static void main(String[] args) {
     }
 }
 ```
+
+此时服务端的代码如下图所示：    
+![](assets/01NIO基础内容/file-20250926001836807.png)
 
 这样，我们就实现了单线程Reactor模式，注意全程使用到的都只是一个线程，没有创建新的线程来处理任何事情。
 
