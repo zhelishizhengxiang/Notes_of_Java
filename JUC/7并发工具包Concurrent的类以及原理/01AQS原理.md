@@ -24,4 +24,4 @@
 ![](assets/01AQS原理/file-20250925142659756.png)
 
 
-![](assets/11可重入锁（ReentrantLock）/file-20250925142831906.png)
+![](../2共享模型之管程/assets/11可重入锁（ReentrantLock）/file-20250925142831906.png)

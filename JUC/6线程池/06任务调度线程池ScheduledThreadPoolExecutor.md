@@ -26,5 +26,3 @@
 
 ![](assets/06任务调度线程池ScheduledThreadPoolExecutor/file-20250923230949548.png)
 * **上图的delay（第三个参数）是从上一次执行结束才开始计算的**。
-
-### 

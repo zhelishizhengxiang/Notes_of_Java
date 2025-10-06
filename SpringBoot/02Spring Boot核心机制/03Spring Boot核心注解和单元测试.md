@@ -228,6 +228,9 @@ public class Sb306TestApplication {
 4. **注入依赖**：
     - 使用 `@SpringBootTest` 创建的应用程序上下文允许你在测试类中使用 `@Autowired` 注入需要的 bean，就像在一个真实的 Spring Boot 应用程序中一样。
 
+
+![](assets/03Spring%20Boot核心注解和单元测试/file-20251006112501927.png)
+
 总的来说，`@SpringBootTest` 为你的测试提供了尽可能接近实际运行时环境的条件，这对于验证应用程序的行为非常有用。
 
 

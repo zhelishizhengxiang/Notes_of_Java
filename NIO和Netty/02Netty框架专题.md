@@ -1026,7 +1026,7 @@ public static void main(String[] args) {
 
 ### 6.Future和Promise
 
-我们接着来看ChannelFuture，前面我们提到，Netty中Channel的相关操作都是异步进行的，并不是在当前线程同步执行，我们不能立即得到执行结果，如果需要得到结果，那么我们就必须要利用到Future。
+我们接着来看ChannelFuture，**前面我们提到，Netty中Channel的相关操作都是异步进行的，并不是在当前线程同步执行，我们不能立即得到执行结果，如果需要得到结果，那么我们就必须要利用到Future。**
 
 我们先来看看ChannelFutuer接口怎么定义的：
 
@@ -1060,7 +1060,7 @@ public interface Future<V> extends java.util.concurrent.Future<V> {   //再往�
 }
 ```
 
-Channel的很多操作都是异步完成的，直接返回一个ChannelFuture，比如Channel的write操作，返回的就是一个ChannelFuture对象：
+**Channel的很多操作都是异步完成的，直接返回一个ChannelFuture，比如Channel的write操作，返回的就是一个ChannelFuture对象**：
 
 ```java
 .addLast(new ChannelInboundHandlerAdapter(){
@@ -1068,6 +1068,7 @@ Channel的很多操作都是异步完成的，直接返回一个ChannelFuture，
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         ByteBuf buf = (ByteBuf) msg;
         System.out.println("接收到客户端发送的数据："+buf.toString(StandardCharsets.UTF_8));
+        //channel的写操作
         ChannelFuture future = ctx.writeAndFlush(Unpooled.wrappedBuffer("已收到！".getBytes()));
         System.out.println("任务完成状态："+future.isDone());   //通过ChannelFuture来获取相关信息
     }
@@ -1085,8 +1086,9 @@ Channel的很多操作都是异步完成的，直接返回一个ChannelFuture，
     System.out.println("我是服务端启动完成之后要做的事情！");
 }
 ```
+![](assets/02Netty框架专题/file-20251004212339753.png)
 
-可以看到，服务端的启动就比较慢了，所以在一开始直接获取状态会返回`false`，但是这个时候我们又需要等到服务端启动完成之后做一些事情，这个时候该怎么办呢？现在我们就有两种方案了：
+可以看到，服务端的启动就比较慢了，所以在一开始直接获取状态会返回`false`，但是这个时候**我们又需要等到服务端启动完成之后做一些事情**，这个时候该怎么办呢？现在我们就有两种方案了：
 
 ```java
                 }
@@ -1098,7 +1100,7 @@ Channel的很多操作都是异步完成的，直接返回一个ChannelFuture，
 }
 ```
 
-第一种方案是直接让当前线程同步等待异步任务完成，我们可以使用`sync()`方法，这样当前线程会一直阻塞直到任务结束。第二种方案是添加一个监听器，等待任务完成时通知：
+**第一种方案是直接让当前线程同步等待异步任务完成，我们可以使用`sync()`方法，这样当前线程会一直阻塞直到任务结束。第二种方案是添加一个监听器，等待任务完成时通知**：
 
 ```java
                 }
@@ -1131,7 +1133,7 @@ try(Scanner scanner = new Scanner(System.in)){
 }
 ```
 
-我们接着来看看Promise接口，它支持手动设定成功和失败的结果：
+我们接着来看看**Promise接口，它支持手动设定成功和失败的结果**：
 
 ```java
 //此接口也是继承自Netty中的Future接口
@@ -1164,8 +1166,9 @@ public static void main(String[] args) throws ExecutionException, InterruptedExc
     System.out.println(promise.get());    //获取结果，就是我们刚刚给进去的
 }
 ```
+![](assets/02Netty框架专题/file-20251004212812909.png)
 
-可以看到我们可以手动指定成功状态，包括ChannelOutboundInvoker中的一些基本操作，都是支持ChannelPromise的：
+可以看到我们可以手动指定成功状态，**包括ChannelOutboundInvoker中的一些基本操作，都是支持ChannelPromise的：**
 
 ```java
 .addLast(new ChannelInboundHandlerAdapter(){
@@ -1197,13 +1200,13 @@ public static void main(String[] args) throws ExecutionException, InterruptedExc
 
 有关Future和Promise就暂时讲解到这里。
 
-### 编码器和解码器
+### 7.编码器和解码器
 
-前面我们已经了解了Netty的大部分基础内容，我们接着来看看Netty内置的一些编码器和解码器。
+前面我们已经了解了Netty的大部分基础内容，我们接着来看看**Netty内置的一些编码器和解码器。**
 
 在前面的学习中，我们的数据发送和接收都是需要以ByteBuf形式传输，但是这样是不是有点太不方便了，咱们能不能参考一下JavaWeb那种搞个Filter，在我们开始处理数据之前，过过滤一次，并在过滤的途中将数据转换成我们想要的类型，也可以将发出的数据进行转换，这就要用到编码解码器了。
 
-我们先来看看最简的，字符串，如果我们要直接在客户端或是服务端处理字符串，可以直接添加一个字符串解码器到我们的流水线中：
+我们先来看看最简的，**字符串，如果我们要直接在客户端或是服务端处理字符串，可以直接添加一个字符串解码器到我们的流水线中**：
 
 ```java
 @Override
@@ -1225,7 +1228,7 @@ protected void initChannel(SocketChannel channel) {
 
 ![image-20230306174321314](https://s2.loli.net/2023/03/06/x6Fh48G7PjZqHoW.png)
 
-我们看到它是继承自MessageToMessageDecoder，用于将传入的Message转换为另一种类型，我们也可以自行编写一个实现：
+**我们看到它是继承自MessageToMessageDecoder，用于将传入的Message转换为另一种类型，我们也可以自行编写一个实现：**
 
 ```java
 /**
@@ -1262,7 +1265,7 @@ public class TestDecoder extends MessageToMessageDecoder<ByteBuf> {
 
 ![image-20230306174344121](https://s2.loli.net/2023/03/06/izRZ8t4BDXPeQbs.png)
 
-可以看到，后面的Handler会依次对三条数据都进行处理，当然，除了MessageToMessageDecoder之外，还有其他类型的解码器，比如ByteToMessageDecoder等，这里就不一一介绍了，Netty内置了很多的解码器实现来方便我们开发，比如HTTP（下一节介绍），SMTP、MQTT等，以及我们常用的Redis、Memcached、JSON等数据包。
+可以看到，**后面的Handler会依次对三条数据都进行处理，当然，除了MessageToMessageDecoder之外，还有其他类型的解码器，比如ByteToMessageDecoder等**，这里就不一一介绍了，**Netty内置了很多的解码器实现来方便我们开发，比如HTTP（下一节介绍），SMTP、MQTT等，以及我们常用的Redis、Memcached、JSON等数据包**。
 
 当然，有了解码器处理发来的数据，那发出去的数据肯定也是需要被处理的，所以编码器就出现了：
 
@@ -1280,7 +1283,7 @@ channel.pipeline()
         .addLast(new StringEncoder());  //使用内置的StringEncoder可以直接将出站的字符串数据编码成ByteBuf
 ```
 
-和上面的StringDecoder一样，StringEncoder本质上就是一个ChannelOutboundHandlerAdapter：
+**和上面的StringDecoder一样，StringEncoder本质上就是一个ChannelOutboundHandlerAdapter：**
 
 ![image-20230306174359121](https://s2.loli.net/2023/03/06/PruXKkgxhOf3bsJ.png)
 
@@ -1324,11 +1327,11 @@ public static void main(String[] args) {
 
 ![image-20230306174410560](https://s2.loli.net/2023/03/06/Jh1VqZMD4LRi7f8.png)
 
-当然，除了编码器和解码器之外，还有编解码器。？？缝合怪？？
+当然，**除了编码器和解码器之外，还有编解码器**。？？缝合怪？？
 
 ![image-20230306174419482](https://s2.loli.net/2023/03/06/CpcgbnRwSk6dIF5.png)
 
-可以看到它是既继承了ChannelInboundHandlerAdapter也实现了ChannelOutboundHandler接口，又能处理出站也能处理入站请求，实际上就是将之前的给组合到一起了，比如我们也可以实现一个缝合在一起的StringCodec类：
+**可以看到它是既继承了ChannelInboundHandlerAdapter也实现了ChannelOutboundHandler接口，又能处理出站也能处理入站请求，实际上就是将之前的给组合到一起了**，比如我们也可以实现一个缝合在一起的StringCodec类：
 
 ```java
 //需要指定两个泛型，第一个是入站的消息类型，还有一个是出站的消息类型，出站是String类型，我们要转成ByteBuf
@@ -1348,9 +1351,9 @@ public class StringCodec extends MessageToMessageCodec<ByteBuf, String> {
 }
 ```
 
-可以看到实际上就是需要我们同时去实现编码和解码方法，继承MessageToMessageCodec类即可。
+**可以看到实际上就是需要我们同时去实现编码和解码方法，继承MessageToMessageCodec类即可。**
 
-当然，如果整条流水线上有很多个解码器或是编码器，那么也可以多次进行编码或是解码，比如：
+当然，**如果整条流水线上有很多个解码器或是编码器，那么也可以多次进行编码或是解码**，比如：
 
 ```java
 public class StringToStringEncoder extends MessageToMessageEncoder<String> {
@@ -1382,7 +1385,7 @@ channel.pipeline()
 
 ![image-20230306174519936](https://s2.loli.net/2023/03/06/7f9LpaTQ8OcqMeN.png)
 
-我们在一开始提到的粘包/拆包问题，也可以使用一个解码器解决：
+**我们在一开始提到的粘包/拆包问题，也可以使用一个解码器解决。超过指定长的的底层会分批加入到list当中，之后handler会依次进行处理**：
 
 ```java
 channel.pipeline()
@@ -1421,9 +1424,9 @@ channel.pipeline()
 
 有关编码器和解码器的内容就先介绍到这里。
 
-### 实现HTTP协议通信
+### 8.实现HTTP协议通信
 
-前面我们介绍了Netty为我们提供的编码器和解码器，这里我们就来使用一下支持HTTP协议的编码器和解码器。
+前面我们介绍了Netty为我们提供的编码器和解码器，这里我们就来**使用一下支持HTTP协议的编码器和解码器。**
 
 ```java
 channel.pipeline()
@@ -1434,7 +1437,7 @@ channel.pipeline()
                 System.out.println("收到客户端的数据："+msg.getClass());  //看看是个啥类型
               	//收到浏览器请求后，我们需要给一个响应回去
                 FullHttpResponse response = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.OK);  //HTTP版本为1.1，状态码就OK（200）即可
-              	//直接向响应内容中写入数据
+              	//直接向响应内容（响应体）中写入数据
                 response.content().writeCharSequence("Hello World!", StandardCharsets.UTF_8);
                 ctx.channel().writeAndFlush(response);   //发送响应
                 ctx.channel().close();   //HTTP请求是一次性的，所以记得关闭
@@ -1451,7 +1454,7 @@ channel.pipeline()
 
 ![image-20230306174542903](https://s2.loli.net/2023/03/06/WoCXiKelwzmYnQI.png)
 
-可以看到一次请求是一个DefaultHttpRequest+LastHttpContent$1，这里有两组是因为浏览器请求了一个地址之后紧接着请求了我们网站的favicon图标。
+可以看到一次请求是一个DefaultHttpRequest+LastHttpContent$1，这里有**两组是因为浏览器请求了一个地址之后紧接着请求了我们网站的favicon图标。**
 
 这样把数据分开处理肯定是不行的，要是直接整合成一个多好，安排：
 
@@ -1481,7 +1484,7 @@ channel.pipeline()
 
 ![image-20230306174609270](https://s2.loli.net/2023/03/06/ITE5izhrG4ZedSO.png)
 
-全部放进Resource文件夹，一会根据浏览器的请求路径，我们就可以返回对应的页面了，先安排一个解析器，用于解析路径然后将静态页面的内容返回：
+全部放进Resource文件夹，一会根据浏览器的请求路径，我们就可以返回对应的页面了，**先安排一个解析器，用于解析路径然后将静态页面的内容返回：**
 
 ```java
 public class PageResolver {
