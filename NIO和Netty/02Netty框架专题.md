@@ -1305,7 +1305,7 @@ public static void main(String[] args) {
                             .addLast(new ChannelInboundHandlerAdapter(){
                                 @Override
                                 public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-                                    System.out.println(">> 接收到客户端发送的数据：" + msg);  //直接接收字符串
+                                    System.out.println(">> 接收到服务端发送的数据：" + msg);  //直接接收字符串
                                 }
                             })
                             .addLast(new StringEncoder());  //编码器安排
