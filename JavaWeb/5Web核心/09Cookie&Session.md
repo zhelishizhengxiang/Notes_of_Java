@@ -36,8 +36,9 @@
 ### 3.Cookie的使用细节
 ![](assets/09Cookie&Session/file-20250714200245727.png)
 * **cookie默认情况下存储在浏览器内存，浏览器关闭内存就会释放**
-* * **默认情况下不能存储中文，如果直接存储是会报错**
+* * **默认情况下不能存储中文，如果直接存储是会报错。**
 * **想要存储中文内容，就需要进行url编码（之前讲过[06Request和Response](06Request和Response.md)）。当获取cookie时对其进行解码即可**
+* **在移动端app无法使用cookie，只能在web网页中使用cookie**
 
 ###### 设置cookie存活时间
 
@@ -96,7 +97,7 @@
 * **而对于JSP页面来说，直接通过 EL 表达式（如 `${requestScope.testAttribute}` ）显示该属性值，当属性值为 `null` 时，页面上不会显示任何内容**
 
 什么时候时使用cookie和session，什么时候使用请求转发：**当是两个独立请求时，就必须使用cookie和session去保存信息后进行信息传递；而请求转发是两个资源去处理同一个请求**。
-
+ 
 ![](assets/09Cookie&Session/file-20250715020128560.png)
 
 ## 五、登录注册案例

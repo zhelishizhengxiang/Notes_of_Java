@@ -88,7 +88,7 @@ Object类的toString方法的接口如下所示
 ```java
 public String toString();
 ```
-13. 该方法返回该对象的字符串表示，默认返回全类名（包名+类名）+@+对象的hashcode值的16进制表示
+13. 该方法返回该对象的字符串表示，默认返回全类名（包名+类名）+@+对象的hashcode值的16进制表示 
 
 Object类的toString方法如下所示：
 ```java

@@ -1,6 +1,7 @@
 * **原生的Servlet API指的是：HttpServletRequest**
 * 在**SpringMVC当中，一个Controller类中的方法参数上如果有HttpServletRequest，SpringMVC会自动将`**当前请求对象**`传递给这个参数，因此我们可以通过这个参数来获取请求提交的数据**。
-* **同样的，如果方法中有HttpServletResponse response, HttpSession session，同样也会讲响应对象和session对象传过来**
+* **同样的，如果方法中有HttpServletResponse response, HttpSession session，同样也会讲响应对象和session对象传过来**  
+	![](assets/02原生的Servlet%20API获取请求参数（不建议使用）/file-20251225150658794.png)
 
 在 register.html 中准备一个注册的表单：
 ```html

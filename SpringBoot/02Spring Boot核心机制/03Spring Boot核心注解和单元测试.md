@@ -1,4 +1,4 @@
-# 一、Spring Boot核心注解
+ # 一、Spring Boot核心注解
 
 创建一个新的模块，来学习Spring Boot核心注解：
 
@@ -38,14 +38,14 @@ public class Sb305CoreApplication {
         Date dateBean2 = applicationContext.getBean("getNowDate", Date.class);
         System.out.println(dateBean2);
     }
-}
+}  
 ```
 
 执行结果：
 
 ![](https://cdn.nlark.com/yuque/0/2024/png/21376908/1729564458157-1d953623-9405-4577-8fa4-ed955038be77.png)
 
-这个`配置类`也可以称为`源`，起源的意思，SpringBoot从这个配置类开始加载项目中所有的bean。
+这个`配置类`也可以称为  `源`，起源的意思，SpringBoot从这个配置类开始加载项目中所有的bean。
 
 
 
@@ -58,7 +58,7 @@ public class Sb305CoreApplication {
 * **自动配置：只要启动，springboot应用会去类路径当中查找class，根据类路径当中有某个类，或引入了某些启动器（依赖），来自动管理bean，不需要我们程序员手动配置**
 
 例如：如果你在SpringBoot项目的applicaiton.properties中进行了如下配置：
-
+  
 ```properties
 spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
 spring.datasource.url=jdbc:mysql://localhost:3306/springboot

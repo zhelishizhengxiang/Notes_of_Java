@@ -9,7 +9,7 @@
 ![](assets/02ConcurrentHashMap原理/file-20251006190555218.png)
 ### 1.JDK7 HashMap并发死链
 
-注：j**dk7中hashmap是由数组+链表**的数据结构组成。使用拉链法解决哈希冲突时，**是将新节点加入链表头部；JDK8是放在链表尾部（可以避免四联问题，但是会有其他的问题（比如扩容丢数据））**。
+注：j**dk7中hashmap是由数组+链表**的数据结构组成。使用拉链法解决哈希冲突时，**是将新节点加入链表头部；JDK8是放在链表尾部（可以避免死链问题，但是会有其他的问题（比如扩容丢数据）。
 
 **并发死链：在多线程下JDK7 HashMap进行扩容时，会造成并发死链的问题。使得程序直接卡死，直接内存OutofMemory**
 
@@ -32,7 +32,7 @@
 
 ![](assets/02ConcurrentHashMap原理/file-20251006165256364.png)
 ![](assets/02ConcurrentHashMap原理/file-20251006165311180.png)
-* 这是为了让thread1去完成扩容  
+* 这是为了让thread1去完成扩容    
 ![](assets/02ConcurrentHashMap原理/file-20251006165458381.png)
 
 ![](assets/02ConcurrentHashMap原理/file-20251006165931493.png)

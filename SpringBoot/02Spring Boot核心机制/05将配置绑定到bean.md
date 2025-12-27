@@ -1,6 +1,6 @@
 
 ### 1.绑定简单bean
-* **SpringBoot配置文件中的信息除了可以使用`@Value注解`读取之外，也可以将配置信息一次性赋值给Bean对象的属性，并且比@Value注解好用很多。**
+* **SpringBoot配置文件中的信息除了可以使用`@Value注解`读取之外，也可以使用@ConfigurationProperties将配置信息一次性赋值给Bean对象的属性，并且比@Value注解好用很多。**
 
 例如有这样的配置：
 
@@ -256,7 +256,7 @@ public class Address {
 
 
 
-![](https://cdn.nlark.com/yuque/0/2024/png/21376908/1730804471502-31c64115-c49a-4d76-92e0-90e9ae543b32.png)
+
 
 ### 4.@EnableConfigurationProperties与@ConfigurationPropertiesScan
 **将`AppBean`纳入IoC容器的管理，之前我们说了两种方式：第一种是使用`@Component`，第二种是使用`@Configuration`。SpringBoot其实还提供了另外两种方式，这两个注解都是标注在SpringBoot主入口程序上的：**

@@ -717,7 +717,7 @@ public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws E
 
 ![image-20230306174211952](https://s2.loli.net/2023/03/06/lSAjPCskUT9miNd.png)
 
-**Channel在监听到事件之后，其会通过Handler进行一定的处理，就会通过流水线上的handler一次进行处理。整个流水线是通过双线链表进行维护的**
+**Channel在监听到事件之后，其会通过Handler进行一定的处理，就会通过流水线上的handler一次进行处理。整个流水线是通过双向链表进行维护的**
 
 **它就像是一条流水线一样，整条流水线上可能会有很多个Handler（包括入站和出站），整条流水线上的两端还有两个默认的处理器（创建后自动拥有相当于头节点和尾节点，用于一些预置操作和后续操作，比如释放资源等），我们只需要关心如何安排这些自定义的Handler即可**，比如我们现在希望创建两个入站ChannelHandler，一个用于接收请求并处理，还有一个用于处理当前接收请求过程中出现的异常：
 
@@ -782,7 +782,8 @@ protected void initChannel(SocketChannel channel) {
 
 * **注意出站操作应该在入站操作的前面，当我们使用ChannelHandlerContext的write方法时，是从流水线的当前位置倒着往前找下一个ChannelOutboundHandlerAdapter**
 * **如果我们使用的是Channel的write方法，那么会从整个流水线的最后开始倒着往前找ChannelOutboundHandlerAdapter**
-* **数据在达到流水线HandlerPipeLine时，只会走入站的Handler的。只有当执行写操作比如writeAndFlush()，才会去进入出站处理器。具体是从当前代码的位置倒着往前找有没有在该入站处理器之前定义出站处理器。如果想要从整个流水线的后面开始找ChannelOutboundHandlerAdapter的话，就需要使用ctx.channel().writeAndFlush()**
+* **数据在达到流水线HandlerPipeLine时，只会走入站的Handler的。只有当执行写操作比如writeAndFlush()**，才会去进入出站处理器。具体是从当前代码的位置倒着往前找有没有在该入站处理器之前定义出站处理器。如果想要从整个流水线的后面开始找ChannelOutboundHandlerAdapter的话，就需要使用ctx.channel().writeAndFlush()    
+	![](assets/02Netty框架专题/file-20251008201903109.png)
 ```java
 @Override
 protected void initChannel(SocketChannel channel) {
@@ -1206,6 +1207,8 @@ public static void main(String[] args) throws ExecutionException, InterruptedExc
 
 在前面的学习中，我们的数据发送和接收都是需要以ByteBuf形式传输，但是这样是不是有点太不方便了，咱们能不能参考一下JavaWeb那种搞个Filter，在我们开始处理数据之前，过过滤一次，并在过滤的途中将数据转换成我们想要的类型，也可以将发出的数据进行转换，这就要用到编码解码器了。
 
+* **解码器继承自入站处理器；编码器继承自出站处理器**
+
 我们先来看看最简的，**字符串，如果我们要直接在客户端或是服务端处理字符串，可以直接添加一个字符串解码器到我们的流水线中**：
 
 ```java
@@ -1224,7 +1227,7 @@ protected void initChannel(SocketChannel channel) {
 }
 ```
 
-可以看到，使用起来还是非常方便的，我们只需要将其添加到流水线即可，实际上器本质就是一个ChannelInboundHandlerAdapter：
+可以看到，使用起来还是非常方便的，我们只需要将其添加到流水线即可，实际上本质就是一个ChannelInboundHandlerAdapter：
 
 ![image-20230306174321314](https://s2.loli.net/2023/03/06/x6Fh48G7PjZqHoW.png)
 
@@ -1415,7 +1418,7 @@ channel.pipeline()
         .addLast(new ChannelInboundHandlerAdapter(){
             @Override
             public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-                System.out.println(">> 接收到客户端发送的数据：" + msg);
+                System.out.println(">> 接收到服务端发送的数据：" + msg);
             }
         })
         .addLast(new LengthFieldPrepender(4))   //客户端在发送时也需要将长度拼到前面去

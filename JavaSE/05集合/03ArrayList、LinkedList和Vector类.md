@@ -48,7 +48,7 @@
 ![](assets/03ArrayList、LinkedList和Vector类/file-20250218155739540.png)
 * 从图中可以看出，扩容的核心逻辑都在方法grow()中。接下来我们分析grow方法的业务逻辑
 * 对于第一次add来说，他会首先判断当前的容量也就是`elementData.length`是否大于0或者`elementData`是一个空数组，显然此时就是一个空数组，所以会执行else的语句块。那么会返回一个新的Object数组，容量为`Math.max(DEFAULT_CAPACITY, minCapacity)`,其中`DEFAULT_CAPACITY`为10，minCapacity为1（因为size为0，传进来的是size+1）。所以就返回一个容量为10的新的Object数组
-* 当第一次扩容完以后，并且还没有执行到第11次扩容时，代码执行到第二层add，由于size并`elementData.length`，并不会执行grow()方法，所以并不会扩容，就直接进行后面的赋值操作
+* 当第一次扩容完以后，并且还没有执行到第11次扩容时，代码执行到第二层add，由于size不等于`elementData.length`，并不会执行grow()方法，所以并不会扩容，就直接进行后面的赋值操作
 
 3. 接下来执行第11次扩容（i=10）时，将会执行以下代码
 

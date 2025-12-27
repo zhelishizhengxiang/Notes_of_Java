@@ -38,7 +38,7 @@ StringBuffer和String的对比：
 
 
 ### 3.StringBuffer与String的转换
-在开发中，我们经常需要Strng和StringBuffer相互转换
+在开发中，我们经常需要String和StringBuffer相互转换
 
 ![](assets/04StringBuffer类和StringBuilder类/file-20250216095855807.png)
 * StringBuffer和StringBuilder的toString方法是一样的，都是底层返回new String

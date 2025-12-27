@@ -3,7 +3,7 @@
 ![](assets/11可重入锁（ReentrantLock）/file-20250911213205823.png)
 * 可中断的体现：**等待获取锁的线程，可以被其他线程打断来终止该线程的等待。** 具体见下文
 * 设置超时时间：synchronized如果竞争锁失败那么会直接进入entrylist一直去等待；而ReentrantLock可以设置超时时间，规定时间内有获取锁就放弃对锁的竞争。
-* 设置为公平锁：公平锁是一种防止线程饥饿的情况发生的锁，即让想要获取锁的线程排队等(队列)，而不是去随即争抢。synchronized的锁是不公平锁
+* 设置为公平锁：公平锁是一种防止线程饥饿的情况发生的锁，即让想要获取锁的线程排队等(队列)，而不是去随机争抢。synchronized的锁是不公平锁
 * 支持多个条件变量：条件变量就相当于synchronized中重量级锁的monitor的waitset，当不满足条件时会进入waitset进行等待。即ReentrantLock支持多个waitset，不满足条件1的进入waitset1去等；不满足条件2的进入waitset2去等
 
 **使用：需要先创建一个ReentrantLock对象；调用该对象的lock()方法来获取锁，一般临界区的代码要用try-finally块包裹，在finally块中使用unlock()释放锁**

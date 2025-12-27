@@ -4,7 +4,7 @@
 
 ### 2.非公平锁实现原理
 
-###### 加锁解锁流程
+###### 加锁流程
 
 ![](assets/02ReentrantLock原理/file-20250925143249863.png)
 * **先从构造器开始看，默认为非公平锁实现**。NonfairSync 继承自 AQS
@@ -13,6 +13,7 @@
 ![](assets/02ReentrantLock原理/file-20250925143440798.png)
 ![](assets/02ReentrantLock原理/file-20250926192441359.png)
 ![](assets/02ReentrantLock原理/file-20250926192634917.png)
+![](assets/02ReentrantLock原理/file-20251119002916935.png)
 ![](assets/02ReentrantLock原理/file-20250926194128110.png)
 ![](assets/02ReentrantLock原理/file-20250926194036880.png)
 * 加锁成功流程：**使用cas机制修改state状态。成功修改为1则设置owner线程该为当前线程。返回true**
@@ -37,11 +38,11 @@
 
 接着上面多个线程加锁竞争后的图解继续进行 。
 
+相关源码如下图所示：  
 ![](assets/02ReentrantLock原理/file-20250926195855433.png)
 ![](assets/02ReentrantLock原理/file-20250926195943847.png)
 ![](assets/02ReentrantLock原理/file-20250926200053174.png)
 ![](assets/02ReentrantLock原理/file-20250926200613110.png)
-相关源码如下图所示：  
 
 
 
@@ -52,7 +53,7 @@
 
 注：其恢复之后的代码在下图所示的位置  
 
-
+![](assets/02ReentrantLock原理/file-20250926194128110.png)
 * 在该块代码一被唤醒，就会进入下一次循环。去执行tryAcquire()竞争锁。此时Thread1如果竞争成功了，设置thread1为owner线程，并且将state设置为1。
 * 此时第一个if块为真，使用setHead()将该节点设置位头节点，将原来的dummy节点断开连接，将其中关联的线程设置为空（相当于一个新的dummy，最后的结果具体如上图所示）
 
@@ -104,7 +105,7 @@
 ![](assets/02ReentrantLock原理/file-20250927105303106.png)
 ![](assets/02ReentrantLock原理/file-20250927105640914.png)
 * **当使用后公平锁争抢时，会先去检查队列中是否有除dummy节点外的等待的节点并且不是当前线程，如果有则返回false，没有的话才会去竞争**
-* 返回到外层后就会讲其加入到等待队列中阻塞
+* 返回到外层后就会将其加入到等待队列中阻塞
 
 ### 4.条件变量实现原理
 

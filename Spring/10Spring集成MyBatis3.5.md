@@ -234,7 +234,7 @@ public interface AccountMapper {
 
 - 第六步：编写mapper配置文件
 
-一定要注意，按照下图提示创建这个目录。注意是斜杠不是点儿。在resources目录下新建。并且要和Mapper接口包对应上。
+一定要注意，按照下图提示创建这个目录。注意是斜杠不是点儿。在resources目录下新建。并且要和Mapper接口包对应上。  
 ![image.png](https://cdn.nlark.com/yuque/0/2022/png/21376908/1666660299388-b2e278e1-497d-4357-835c-ca95bfd87f0e.png#averageHue=%23f6f0ee&clientId=u73ffb7ec-cc40-4&from=paste&height=269&id=ua3500e97&originHeight=269&originWidth=536&originalType=binary&ratio=1&rotation=0&showTitle=false&size=28659&status=done&style=shadow&taskId=u36c618c7-8cdc-4268-9d47-80daab48502&title=&width=536)
 如果接口叫做AccountMapper，配置文件必须是AccountMapper.xml
 ```xml

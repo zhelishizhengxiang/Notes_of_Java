@@ -60,8 +60,6 @@ afterNodeInsertion(evict);
 ![](assets/06HashSet和LinkedHashSet/file-20250221121245805.png)
 * 在放入元素后判断是否需要扩容也就是元素个数是否到达阈值，如果需要扩容那么就调用resize进行扩容
 * `afterNodeInsertion(evict)`方法是HashMap留给其子类（比如LinkedHashMap）去重写实现一些动作（比如形成一个有序的链表等）的。对于HashMap，该方法方法体为空，什么都没干
-* 此处putVal返回空给put方法，那么put方法也会返回给add方法，用于在add方法中判断。也就是如果返回null，则代表add成功，返回true；如果没返回null，则返回false
-
 
 ![](assets/06HashSet和LinkedHashSet/file-20250221111320611.png)
 ![](assets/06HashSet和LinkedHashSet/file-20250221112445227.png)
@@ -188,7 +186,7 @@ if (p.hash == hash &&  ((k = p.key) == key || (key != null && key.equals(k))))
 ###### 对于扩容机制的总结
 
 ![](assets/06HashSet和LinkedHashSet/file-20250221210515443.png)
-下面将通过以下图的代码详细测试HashSet的扩容机制（主要的方法为resize()方法）
+下面将通过以下图的代码详细测试HashMap的扩容机制（主要的方法为resize()方法）
 
 ![](assets/06HashSet和LinkedHashSet/file-20250221211524027.png)
 

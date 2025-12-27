@@ -170,6 +170,7 @@ public String testValueAnt(){
 * 如果使用RESTful风格的请求路径，**在控制器中应该如何获取请求中的数据呢？**  
 	1. **可以在value属性中使用占位符，例如：/login/{id}/{username}/{password}**
 	2. **同时在绑定的方法的参数中使用`@PathVariable("占位符") String username` ，代表把占位符的获得到的值赋给该参数**
+	3. **如果路径参数与形参名一致，那么可以不写@PathVariable就可以不写里面的占位符了。**
 
 在 RequestMappingTestController 类中添加一个方法：
 ```java

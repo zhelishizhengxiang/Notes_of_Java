@@ -1,6 +1,6 @@
 ## 1)集合的选择
 ![](assets/09集合的选择、TreeSet和TreeMap/file-20250226094418511.png)
-* treeSet和TreeMap的键排序的意思是取出顺序按照某个规则进行排序
+* **treeSet和TreeMap的键排序的意思是取出顺序按照某个规则进行排序**
 * 而LinkedHashMap是保证了取出顺序与存放顺序一致
 * **TreeSet和TreeMap最大的特点是键排序：即取出顺序是按照键来排序进行取出**
 * **TreeSet的底层结构是TreeMap**

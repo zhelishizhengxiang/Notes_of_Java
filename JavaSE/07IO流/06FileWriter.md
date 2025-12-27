@@ -20,7 +20,7 @@
 ![](assets/06FileWriter/file-20250327222632564.png)
 ![](assets/06FileWriter/file-20250327222654453.png)
 ![](assets/06FileWriter/file-20250327222751968.png)
-* 这个writebytes方法才是在真正的向文件里面写入数据，flush方法也是也是同样调用该方法。所以只有调用它们才会向文件中写入内容
+* 这个writebytes方法才是在真正的向文件里面写入数据，flush方法也是同样调用该方法。所以只有调用它们才会向文件中写入内容
 
 
 

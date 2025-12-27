@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Java Stream API Cheat Sheet</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+  <style>
+    body {
+      font-family: 'consolas','思源宋体 CN';
+      margin: 0;
+      padding: 0;
+      background-color: #f7f7f7;
+      color: #333;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 20px auto;
+      padding: 20px;
+      background-color: #fff;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .card-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 10px;
+      /* Adjust the gap between cards */
+    }
+
+    .card {
+      flex: 1 1 300px;
+      /* Flex-grow, flex-shrink, and base width */
+      margin-bottom: 10px;
+      padding: 5px;
+      background-color: #f9f9f9;
+      border: 1px solid #eaeaea;
+      border-radius: 5px;
+      overflow: hidden;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      /* justify-content: space-between; */
+      padding: 3px;
+      background-color: #c5a100;
+      color: #fff;
+      border-top-left-radius: 5px;
+      border-top-right-radius: 5px;
+    }
+
+    .card-header i {
+      margin-right: 10px;
+    }
+
+    .card-body {
+      padding: 3px;
+    }
+
+    .card-title {
+      font-size: 1.2em;
+      font-weight: bold;
+      margin: 0;
+      color: rgba(0, 0, 0, 0)
+    }
+
+    .create {
+      background-color: #008026;
+    }
+
+    .terminal {
+      background-color: #007bff;
+    }
+
+    .special {
+      background-color: #ca3d00;
+    }
+
+    .other {
+      background-color: #686767;
+    }
+
+    .card-text {
+      font-size: 0.9em;
+      line-height: 1.0;
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 30px;
+      padding: 10px 0;
+      background-color: #f9f9f9;
+      border-top: 1px solid #eaeaea;
+    }
+
+    .table {
+      width: 100%;
+      max-width: 600px;
+      /* Adjust the max-width as needed */
+      margin: 4px auto;
+    }
+
+    .row {
+      display: flex;
+      border-bottom: 1px solid #eaeaea;
+    }
+
+    .cell {
+      padding: 4px;
+      box-sizing: border-box;
+      border-right: 1px solid #eaeaea;
+      font-size: 12px;
+      /* Add right border to cells */
+    }
+
+    .cell:first-child {
+      padding-left: 4px;
+      /* Add some extra padding to the left of the first cell */
+    }
+
+    .cell:last-child {
+      padding-right: 4px;
+      /* Add some extra padding to the right of the last cell */
+      border-right: none;
+      /* Remove right border from the last cell */
+    }
+
+    /* Zebra striping with background colors */
+    .row:nth-child(odd) {
+      background-color: #f2f2f2;
+    }
+
+    .row:nth-child(even) {
+      background-color: #fff;
+    }
+
+    .legend-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 15px;
+      /* Adjust the gap between legend items */
+    }
+
+    .legend-item {
+      position: relative;
+      /* Position relative for the pseudo-element */
+      width: 120px;
+      /* Width of the legend item */
+      height: 25px;
+      /* Height of the legend item */
+      margin: 5px;
+      /* Margin around legend items */
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid #ccc;
+      /* Border for each legend item */
+      border-radius: 5px;
+      /* Rounded corners for the legend items */
+      overflow: hidden;
+      /* Ensure the pseudo-element doesn't overflow */
+    }
+
+    .legend-text {
+      margin: 0;
+      font-size: 14px;
+      /* Font size for legend text */
+    }
+
+    .legend-emoji {
+      font-size: 24px;
+      /* Font size for Emoji */
+      margin-bottom: 5px;
+      /* Space between Emoji and text */
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <div class="card-container">
+      <div class="card">
+        <div class="card-header create">
+          <i class="fas fa-terminal"></i><b>构建</b>
+          <div class="card-title">Terminal Operations</div>
+        </div>
+        <div class="card-body">
+          <div class="table">
+            <div class="row">
+              <div class="cell" style="flex: 2;">Arrays.<i>stream</i>(数组)</div>
+              <div class="cell" style="flex: 1;">根据数组构建</div>
+            </div>
+            <div class="row">
+              <div class="cell" style="flex: 2;">Collection.stream()</div>
+              <div class="cell" style="flex: 1;">根据集合构建</div>
+            </div>
+            <div class="row">
+              <div class="cell" style="flex: 2;">Stream.<i>of</i>(对象1, 对象2, ...)</div>
+              <div class="cell" style="flex: 1;">根据对象构建</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card" style="flex: 1 1 400px;">
+        <div class="card-header create">
+          <i class="fas fa-terminal"></i><b>生成</b>
+          <div class="card-title">Terminal Operations</div>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="cell" style="flex: 2;">IntStream.range(a, b)</div>
+            <div class="cell" style="flex: 2;">根据范围生成(含 a 不含 b)</div>
+          </div>
+          <div class="row">
+            <div class="cell" style="flex: 2;">IntStream.rangeClosed(a, b)</div>
+            <div class="cell" style="flex: 2;">根据范围生成(含 a 也含 b)</div>
+          </div>
+          <div class="row">
+            <div class="cell" style="flex: 2;">IntStream.iterate(s, p -> c)</div>
+            <div class="cell" style="flex: 2;">s 初始值, p 前值, c 当前值</div>
+          </div>
+          <div class="row">
+            <div class="cell" style="flex: 2;">IntStream.generate(() -> c)</div>
+            <div class="cell" style="flex: 2;">c 当前值</div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header create">
+          <i class="fas fa-terminal"></i><b>合并</b>
+          <div class="card-title">Terminal Operations</div>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="cell" style="flex: 2;">Stream.<i>concat</i>(流1, 流2)</div>
+            <div class="cell" style="flex: 1;">合并两个流</div>
+          </div>
+        </div>
+      </div>
+      <div class="card" style="flex: 1 1 500px;">
+        <div class="card-header">
+          <i class="fas fa-terminal"></i><b>截取</b>
+          <div class="card-title">Terminal Operations</div>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="cell" style="flex: 2;">stream.skip(n)</div>
+            <div class="cell" style="flex: 2;">舍弃 n 个, 保留剩余</div>
+          </div>
+          <div class="row">
+            <div class="cell" style="flex: 2;">stream.limit(n)</div>
+            <div class="cell" style="flex: 2;">🔌从当前保留 n 个</div>
+          </div>
+          <div class="row">
+            <div class="cell" style="flex: 2;">stream.dropWhile(x -> boolean)</div>
+            <div class="cell" style="flex: 2;">舍弃, 直到不满足条件, 保留剩余</div>
+          </div>
+          <div class="row">
+            <div class="cell" style="flex: 2;">stream.takeWhile(x -> boolean)</div>
+            <div class="cell" style="flex: 2;">🔌保留, 直到不满足条件, 舍弃剩余</div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <i class="fas fa-terminal"></i><b>过滤</b>
+          <div class="card-title">Terminal Operations</div>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="cell" style="flex: 2;">stream.filter(x -> boolean)</div>
+            <div class="cell" style="flex: 1;">满足条件的保留</div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <i class="fas fa-terminal"></i><b>转换</b>
+          <div class="card-title">Terminal Operations</div>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="cell" style="flex: 2;">stream.map(x -> y)</div>
+            <div class="cell" style="flex: 1;">将 x 转换为 y</div>
+          </div>
+          <div class="row">
+            <div class="cell" style="flex: 2;">stream.flatMap(x -> substream)</div>
+            <div class="cell" style="flex: 1;">将 x 转换为 substream</div>
+          </div>
+          <div class="row">
+            <div class="cell" style="flex: 2;">stream.mapMulti((x, consumer) -> void)</div>
+            <div class="cell" style="flex: 1;">consumer 消费的 x 会进入结果</div>
+          </div>
+          <div class="row">
+            <div class="cell" style="flex: 2;">stream.mapToInt(x -> int)</div>
+            <div class="cell" style="flex: 1;">将 x 转换为 int</div>
+          </div>
+          <div class="row">
+            <div class="cell" style="flex: 2;">stream.mapToLong(x -> long)</div>
+            <div class="cell" style="flex: 1;">将 x 转换为 long</div>
+          </div>
+          <div class="row">
+            <div class="cell" style="flex: 2;">stream.mapToDouble(x -> double)</div>
+            <div class="cell" style="flex: 1;">将 x 转换为 double</div>
+          </div>
+        </div>
+      </div>
+      <div class="card" >
+        <div class="card-header">
+          <i class="fas fa-terminal"></i><b>排序与去重</b>
+          <div class="card-title">Terminal Operations</div>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="cell" style="flex: 3;">stream.distinct()</div>
+            <div class="cell" style="flex: 4;">去重</div>
+          </div>
+          <div class="row">
+            <div class="cell" style="flex: 3;">stream.sort((a, b) -> int)</div>
+            <div class="cell" style="flex: 4;">a 与 b 比较,返回负 a 小,返回零相等,返回正 b 小</div>
+          </div>
+        </div>
+      </div>
+      <div class="card" style="flex: 1 1 500px;">
+        <div class="card-header terminal">
+          <i class="fas fa-terminal"></i><b>查找</b>
+          <div class="card-title">Terminal Operations</div>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="cell" style="flex: 2;">stream.findFirst()</div>
+            <div class="cell" style="flex: 2;">🔌找到第一个, 返回 Optional</div>
+          </div>
+          <div class="row">
+            <div class="cell" style="flex: 2;">stream.findAny()</div>
+            <div class="cell" style="flex: 2;">🔌随便找一个, 返回 Optional</div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header terminal">
+          <i class="fas fa-terminal"></i><b>判断</b>
+          <div class="card-title">Terminal Operations</div>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="cell" style="flex: 2;">stream.anyMatch(x -> boolean)</div>
+            <div class="cell" style="flex: 2;">🔌随便一个满足条件, 返回 true</div>
+          </div>
+          <div class="row">
+            <div class="cell" style="flex: 2;">stream.allMatch(x -> boolean)</div>
+            <div class="cell" style="flex: 2;">🔌所有都满足条件, 才返回 true</div>
+          </div>
+          <div class="row">
+            <div class="cell" style="flex: 2;">stream.noneMatch(x -> boolean)</div>
+            <div class="cell" style="flex: 2;">🔌所有都不满足条件, 才返回 true</div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header terminal">
+          <i class="fas fa-terminal"></i><b>消费</b>
+          <div class="card-title">Terminal Operations</div>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="cell" style="flex: 3;">stream.forEach(x -> void)</div>
+            <div class="cell" style="flex: 1;">消费</div>
+          </div>
+          <div class="row">
+            <div class="cell" style="flex: 3;">stream.forEachOrdered(x -> void)</div>
+            <div class="cell" style="flex: 1;">按序消费</div>
+          </div>
+        </div>
+      </div>
+      <div class="card" style="flex: 1 1 600px;">
+        <div class="card-header terminal">
+          <i class="fas fa-terminal"></i><b>化简</b>
+          <div class="card-title">Terminal Operations</div>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="cell" style="flex: 3;">stream.reduce(init, (p, x) -> r)</div>
+            <div class="cell" style="flex: 3;">init 初始值, 用上次结果 p 和当前元素 x 生成本次结果 r</div>
+          </div>
+          <div class="row">
+            <div class="cell" style="flex: 3;">stream.reduce(init, (p, x) -> r, (r1, r2) -> r)</div>
+            <div class="cell" style="flex: 3;">最后是表示结果之间进行合并</div>
+          </div>
+          <div class="row">
+            <div class="cell" style="flex: 3;">stream.reduce((p, x) -> r)</div>
+            <div class="cell" style="flex: 3;">用第一个值作为初始值, 返回 Optional</div>
+          </div>
+          <div class="row">
+            <div class="cell" style="flex: 3;">stream.min((a, b) -> int)</div>
+            <div class="cell" style="flex: 3;">🎭求最小值</div>
+          </div>
+          <div class="row">
+            <div class="cell" style="flex: 3;">stream.max((a, b) -> int)</div>
+            <div class="cell" style="flex: 3;">🎭求最大值</div>
+          </div>
+          <div class="row">
+            <div class="cell" style="flex: 3;">stream.count()</div>
+            <div class="cell" style="flex: 3;">🎭求个数</div>
+          </div>
+        </div>
+      </div>
+      <div class="card" style="flex: 1 1 750px;">
+        <div class="card-header terminal">
+          <i class="fas fa-terminal"></i><b>收集</b>
+          <div class="card-title">Terminal Operations</div>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="cell" style="flex: 2;">stream.toArray()</div>
+            <div class="cell" style="flex: 2;">收集为数组</div>
+          </div>
+          <div class="row">
+            <div class="cell" style="flex: 2;">stream.toArray(size -> new A[size])</div>
+            <div class="cell" style="flex: 2;">收集为数组</div>
+          </div>
+          <div class="row">
+            <div class="cell" style="flex: 2;">stream.collect(() -> c, (c, x) -> void, (c1, c2) -> c)</div>
+            <div class="cell" style="flex: 2;">收集到容器：首先创建容器 c, 其次将 x 放入 c, 最后合并所有容器</div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header special">
+          <i class="fas fa-terminal"></i><b>调试</b>
+          <div class="card-title">Terminal Operations</div>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="cell" style="flex: 2;">stream.peek(x -> void)</div>
+            <div class="cell" style="flex: 1;">调试</div>
+          </div>
+        </div>
+      </div>
+      <div class="card" style="flex: 1 1 430px;">
+        <div class="card-header other">
+          <i class="fas fa-terminal"></i><b>收集器</b>
+          <div class="card-title">Terminal Operations</div>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="cell" style="flex: 2;">joining(delimiter)</div>
+            <div class="cell" style="flex: 3;">拼接字符串, delimiter 分隔符</div>
+          </div>
+          <div class="row">
+            <div class="cell" style="flex: 2;">toList()</div>
+            <div class="cell" style="flex: 3;">用 ArrayList 收集</div>
+          </div>
+          <div class="row">
+            <div class="cell" style="flex: 2;">toSet()</div>
+            <div class="cell" style="flex: 3;">用 HashSet 收集</div>
+          </div>
+          <div class="row">
+            <div class="cell" style="flex: 2;">toMap(x -> k, x -> v)</div>
+            <div class="cell" style="flex: 3;">从 x 从提取出 k, v</div>
+          </div>
+          <div class="row">
+            <div class="cell" style="flex: 2;">toUnmodifiableList()</div>
+            <div class="cell" style="flex: 3;">用不可变 List 收集</div>
+          </div>
+          <div class="row">
+            <div class="cell" style="flex: 2;">toUnmodifiableSet()</div>
+            <div class="cell" style="flex: 3;">用不可变 Set 收集</div>
+          </div>
+          <div class="row">
+            <div class="cell" style="flex: 2;">toUnmodifiableMap(x -> k, x -> v)</div>
+            <div class="cell" style="flex: 3;">用不可变 Map 收集</div>
+          </div>
+          <div class="row">
+            <div class="cell" style="flex: 2;">partitioningBy(x -> boolean, dc)</div>
+            <div class="cell" style="flex: 3;">按条件分区, 用下游收集器 dc 收集</div>
+          </div>
+          <div class="row">
+            <div class="cell" style="flex: 2;">groupingBy(x -> k, dc)</div>
+            <div class="cell" style="flex: 3;">从 x 从提取出 k, 用下游收集器 dc 收集</div>
+          </div>
+          <div class="row">
+            <div class="cell" style="flex: 2;">mapping(x -> y, dc)</div>
+            <div class="cell" style="flex: 3;">💧将 x 转换为 y, 用下游收集器 dc 收集</div>
+          </div>
+          <div class="row">
+            <div class="cell" style="flex: 2;">flatMapping(x -> substream, dc)</div>
+            <div class="cell" style="flex: 3;">💧将 x 转换为 substream, 用下游收集器 dc 收集</div>
+          </div>
+          <div class="row">
+            <div class="cell" style="flex: 2;">filtering(x -> boolean, dc)</div>
+            <div class="cell" style="flex: 3;">💧过滤后, 用下游收集器 dc 收集</div>
+          </div>
+          <div class="row">
+            <div class="cell" style="flex: 2;">counting()</div>
+            <div class="cell" style="flex: 3;">💧求个数</div>
+          </div>
+          <div class="row">
+            <div class="cell" style="flex: 2;">minBy((a, b) -> int)</div>
+            <div class="cell" style="flex: 3;">💧求最小</div>
+          </div>
+          <div class="row">
+            <div class="cell" style="flex: 2;">maxBy((a, b) -> int)</div>
+            <div class="cell" style="flex: 3;">💧求最大</div>
+          </div>
+          <div class="row">
+            <div class="cell" style="flex: 2;">summingInt(x -> int)</div>
+            <div class="cell" style="flex: 3;">💧转 int 后求和</div>
+          </div>
+          <div class="row">
+            <div class="cell" style="flex: 2;">averagingInt(x -> int)</div>
+            <div class="cell" style="flex: 3;">💧转 int 后求平均</div>
+          </div>
+          <div class="row">
+            <div class="cell" style="flex: 2;">reducing(init, (p, x) -> r)</div>
+            <div class="cell" style="flex: 3;">💧init 初始值, 用上次结果 p 和当前元素 x 生成本次结果 r</div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header other">
+          <i class="fas fa-terminal"></i><b>int 流</b>
+          <div class="card-title">Terminal Operations</div>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="cell" style="flex: 2;">intstream.mapToObj(int -> obj)</div>
+            <div class="cell" style="flex: 2;">转换为 obj 流</div>
+          </div>
+          <div class="row">
+            <div class="cell" style="flex: 2;">intstream.boxed()</div>
+            <div class="cell" style="flex: 2;">转换为 Integer 流</div>
+          </div>
+          <div class="row">
+            <div class="cell" style="flex: 2;">intstream.sum()</div>
+            <div class="cell" style="flex: 2;">🎭求和</div>
+          </div>
+          <div class="row">
+            <div class="cell" style="flex: 2;">intstream.min()</div>
+            <div class="cell" style="flex: 2;">🎭求最小值, 返回 Optional</div>
+          </div>
+          <div class="row">
+            <div class="cell" style="flex: 2;">intstream.max()</div>
+            <div class="cell" style="flex: 2;">🎭求最大值, 返回 Optional</div>
+          </div>
+          <div class="row">
+            <div class="cell" style="flex: 2;">intstream.average()</div>
+            <div class="cell" style="flex: 2;">求平均值, 返回 Optional</div>
+          </div>
+          <div class="row">
+            <div class="cell" style="flex: 2;">intstream.summaryStatistics()</div>
+            <div class="cell" style="flex: 2;">🎭综合 count sum min max average</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="legend-container">
+      <div class="legend-item" style="background-color: #008026; color: #f7f7f7;">
+        <span class="legend-text">创建操作</span>
+      </div>
+      <div class="legend-item" style="background-color: #c5a100; color: #f7f7f7;">
+        <span class="legend-text">中间操作</span>
+      </div>
+      <div class="legend-item" style="background-color: #007bff; color: #f7f7f7;">
+        <span class="legend-text">终结操作</span>
+      </div>
+      <div class="legend-item" style="background-color: #ca3d00; color: #f7f7f7;">
+        <span class="legend-text">调试</span>
+      </div>
+      <div class="legend-item">
+        <span class="legend-text">🔌 短路运算</span>
+      </div>
+      <div class="legend-item">
+        <span class="legend-text">🎭 reduce 马甲</span>
+      </div>
+      <div class="legend-item">
+        <span class="legend-text">💧 配合分组用</span>
+      </div>
+    </div>
+    <p>Java Stream API Cheat Sheet - Created with &hearts; by yihang</p>
+  </footer>
+</body>
+
+</html>
