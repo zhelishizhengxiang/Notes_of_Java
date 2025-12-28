@@ -67,6 +67,7 @@ public class AppBean {
 1. **被绑定的bean，需要使用`@ConfigurationProperties(prefix = "app")`注解进行标注，prefix用来指定前缀，哪个是前缀，如下图所示**：  
 	![](https://cdn.nlark.com/yuque/0/2024/png/21376908/1729667789270-8c85788b-8b00-4d17-bbab-5f87b9a68103.png)
 2. **配置文件中的`name`、`age`、`email`要和bean对象的属性名`name`、`age`、`email`对应上。（属性名相同）并且bean中的所有属性都提供了`setter`方法。因为底层是通过`setter`方法给bean属性赋值的。**
+	![[file-20251228232442167.png]]
 3. .**这样的bean需要使用`@Component`注解进行标注，纳入IoC容器的管理（@Configuration注解也可以）。`@Component`注解负责创建Bean对象，`@ConfigurationProperties(prefix = "app")`注解负责给bean对象的属性赋值。**
 4. **bean的属性需要是`非static`的属性。**
 
