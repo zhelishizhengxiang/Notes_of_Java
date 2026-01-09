@@ -20,7 +20,7 @@
 #### 1.Collection常用方法：
 由于接口本身是不能被实例化的，所以一实现子类ArrayList来演示Collection常用方法
 
-注意：**只要是实现了collection接口的类都会拥有下列方法**
+注意：**只要是实现了collection接口的类都会拥有下列方法**  
 ![](assets/01集合综述、collection接口方法和迭代器/file-20250218092307945.png)
 ![](assets/01集合综述、collection接口方法和迭代器/file-20250308194231436.png)
 ![](assets/01集合综述、collection接口方法和迭代器/file-20250401111245575.png)

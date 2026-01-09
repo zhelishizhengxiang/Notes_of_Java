@@ -120,7 +120,7 @@ Vector和ArrayList的比较如下图所示（记忆）：
 
 
 ##### 情况1：使用无参构造器创建对象，并进行扩容
-1. 创建对象
+1. 创建对象    
 ![](assets/03ArrayList、LinkedList和Vector类/file-20250218172457037.png)
 ![](assets/03ArrayList、LinkedList和Vector类/file-20250218172601387.png)
 ![](assets/03ArrayList、LinkedList和Vector类/file-20250218172706279.png)
@@ -182,7 +182,7 @@ Vector和ArrayList的比较如下图所示（记忆）：
 2. 当第一次调用add方法时的底层源码如下所示
 
 	![](assets/03ArrayList、LinkedList和Vector类/file-20250220121003306.png)
-	* 先对1进行自动装箱
+	* 先对e进行自动装箱    
 	![](assets/03ArrayList、LinkedList和Vector类/file-20250220121101249.png)
 	![](assets/03ArrayList、LinkedList和Vector类/file-20250220121358612.png)
 	*  将新的结点，加入到双向链表的最后，此时last和first都指向新节点newNode
