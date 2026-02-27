@@ -29,7 +29,7 @@
 ![](assets/07BigInteger类和BigDecimal类/file-20250217110534561.png)
 * 注意：除法有可能一直除不尽，也就是结果是无限循环小数，此时会抛异常ArithmeticException；除得尽就不会抛异常
 * 解决方案：在使用divide方法时，传入第二个参数`BigDecimal.ROUND_CEILING`
-* 此参数代表：如果结果是无限循环小数，就会保留被除数的精度
+* 此参数代表：如果结果是无限循环小数，就会进行的一个措施（此处是向下取整）
 
 
 
