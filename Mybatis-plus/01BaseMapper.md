@@ -3,7 +3,7 @@
 1. 作用：**`BaseMapper` 是 MP 提供的一个通用 Mapper 接口，封装了单表 CRUD（增删改查）的常用操作，让你无需手动编写基础 SQL 和 Mapper 方法，直接继承就能快速实现单表操作，大幅简化开发**
 2. 使用: **只需要让Mapper接口继承BaseMapper即可直接使用对单表的增删改查功能**
 
-该接口提供的所有方法如下  
+该接口提供的所有方 法如下  
 ```java
 /*
  * Copyright (c) 2011-2022, baomidou (jobob@qq.com).
@@ -97,9 +97,9 @@ public interface BaseMapper<T> extends Mapper<T> {
     /**
      * 根据 whereEntity 条件，更新记录
      *
-     * @param entity        实体对象 (set 条件值,可以为 null)
+      * @param entity        实体对象 (set 条件值,可以为 null)
      * @param updateWrapper 实体对象封装操作类（可以为 null,里面的 entity 用于生成 where 语句）
-     */
+     */  
     int update(@Param(Constants.ENTITY) T entity, @Param(Constants.WRAPPER) Wrapper<T> updateWrapper);
 
     /**

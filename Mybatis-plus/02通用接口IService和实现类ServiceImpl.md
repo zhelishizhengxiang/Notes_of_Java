@@ -1,7 +1,7 @@
 # 一、概述
 MP不仅提供通用的Mapper，还提供通用的service接口。
 
-* 提供的service接口就是**IService**。该接口进一步封装 CRUD 采用 **get** 查询单行 **remove** 删除 **list** 查询集合 **page** 分页 **save插入**，前缀命名方式区分 Mapper 层避免混淆。**泛型 T 为操作的实体类对象**    
+* 提供的service接口就是**IService**。该接口进一步封装 CRUD 采用 **get** 查询单行 **remove** 删除 **list** 查询集合 **page** 分页 **save** 插入，前缀命名方式区分 Mapper 层避免混淆。**泛型 T 为操作的实体类对象**    
 	![[file-20260109205529791.png]]
 * 建议如果存在自定义通用 Service 方法的可能，请创建自己的 IBaseService 继承
 * **该接口还有一个实现类`ServiceImpl<M extends BaseMapper<T>, T>`，封装了常见的业务层逻辑。其泛型一共有两个。第一个为我们所写的Mapper，第二个为我们所要操作的实体类对象**
