@@ -143,7 +143,7 @@ controller
 
 service  
 ![[file-20260228231933820.png]]
-* lambdaUpdate()与其同理此处就不再演示，只给出代码截图    
+* lambdaUpdate()与其同理此处就不再演示，只给出代码截图     
 	![[file-20260228232639883.png]]
 	
 	
