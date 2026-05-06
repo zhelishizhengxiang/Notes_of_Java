@@ -9,8 +9,8 @@ Git 天生不适合存大文件，原因在于：
 ### 1.3 核心原理 
 Git LFS 采用“**指针替换**”的方式： 
 1. 大文件**不直接存入 Git 仓库，而是存到独立的 LFS 专用服务器。**    
-	![[file-20260503143452468.png]]
-	![[file-20260503143527159.png]]
+	![file-20260503143452468.png](assets/02Git%20LFS/file-20260503143452468.png)
+	![file-20260503143527159.png](assets/02Git%20LFS/file-20260503143527159.png)
 2. Git 仓库里只存一个**几 KB 的“指针文件”**，记录大文件的真实地址 
 3. **执行 `clone`/`checkout` 时，Git LFS 自动按需下载真实大文件**
 ### 1.4 核心优势 
@@ -56,7 +56,6 @@ git lfs install
 以实际场景为例：需要提交 `ElasticSearch/archive/es.tar`、`ElasticSearch/archive/kibana.tar` 两个大体积压缩包。
 ##### 步骤 1：进入目标仓库，初始化仓库级 LFS
 每个仓库仅需执行一次，用于启用当前仓库的 LFS 能力：
-```
 ```bash
 # 进入你的仓库根目录
 cd /path/to/your/Java_Learning
