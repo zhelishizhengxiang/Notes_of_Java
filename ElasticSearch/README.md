@@ -1,15 +1,16 @@
 
-# 笔记相关
+# 学习和笔记相关
 
-笔者学习Elasticsearch参考的视频教程为黑马程序员[视频链接](https://www.bilibili.com/video/BV1b8411Z7w5/?spm_id_from=333.337.search-card.all.click)，笔记为公众号获取资料中的讲义为基础，添加了重点内容的细化和一些本人的理解。
+笔者学习Elasticsearch参考的视频教程为黑马程序员ES[视频链接](https://www.bilibili.com/video/BV1b8411Z7w5/?spm_id_from=333.337.search-card.all.click)，之后进一步观看了黑马程序员微服务开发中的ES[视频链接](https://www.bilibili.com/video/BV1S142197x7/?spm_id_from=333.337.search-card.all.click)的内容补充了部分笔记。笔记为公众号获取资料中的讲义为基础，添加了重点内容的细化和一些本人的理解。
+
+如果时间比较紧只需要看黑马程序员ES[视频链接](https://www.bilibili.com/video/BV1b8411Z7w5/?spm_id_from=333.337.search-card.all.click)，微服务开发中的ES章节内容[视频链接](https://www.bilibili.com/video/BV1S142197x7/?spm_id_from=333.337.search-card.all.click)与其高度重合，不一样的地方看笔记即可全部明白。
 
 由于百度网盘下载缓慢，此处提供学习所必须的相关资料，具体见[附件相关](#附件相关)
-
 # 前置知识相关
 
 1. 由于该教程的es安装和配置都是使用docker来做，所以需要学习docker。需要快速上手可见参考[02Docker](../Spring%20Cloud/黑马微服务/02Docker.md)。
 2. 教程使用的demo项目是spring项目，需要学习可以参考`SpringBoot/`下的笔记。
-3. 教程后期会涉及es与mysql的数据同步问题，所以需要学习消息队列的基础知识。本教程选用的消息队列为RabbitMQ，快速上手可参考[08消息队列——RabbitMQ](../Spring%20Cloud/黑马微服务/08消息队列——RabbitMQ.md)
+3. 教程后期会涉及es与mysql的数据同步问题，所以需要学习消息队列的基础知识。本教程选用的消息队列为RabbitMQ，快速上手可参考[08消息队列——RabbitMQ初级](../Spring%20Cloud/黑马微服务/08消息队列——RabbitMQ初级.md)
 
 
 # 附件相关
